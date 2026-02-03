@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Repurposing Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🔬 Drug Repurposing Assistant</h1>
+                <p class="subtitle">AI-Powered Drug Discovery & Repurposing Analysis</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel - Input Form -->
+            <section class="input-section">
+                <h2>Analysis Input</h2>
+                
+                <form id="analysisForm" class="form">
+                    <!-- Drug Name Input -->
+                    <div class="form-group">
+                        <label for="drugName">Drug Name *</label>
+                        <input 
+                            type="text" 
+                            id="drugName" 
+                            placeholder="e.g., Aspirin, Metformin, Ibuprofen"
+                            required
+                        >
+                    </div>
+
+                    <!-- Disease/Indication Input -->
+                    <div class="form-group">
+                        <label for="indication">Disease/Indication *</label>
+                        <input 
+                            type="text" 
+                            id="indication" 
+                            placeholder="e.g., Alzheimer's Disease, Diabetes, Cancer"
+                            required
+                        >
+                    </div>
+
+                    <!-- Query Input (Optional) -->
+                    <div class="form-group">
+                        <label for="query">Research Query (Optional)</label>
+                        <textarea 
+                            id="query" 
+                            placeholder="Provide additional research context or specific questions..."
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <!-- API Configuration -->
+                    <div class="form-section">
+                        <h3>API Configuration</h3>
+                        <div class="form-group">
+                            <label for="apiUrl">API Endpoint</label>
+                            <input 
+                                type="text" 
+                                id="apiUrl" 
+                                value="https://drug-repurposing-api.onrender.com"
+                                placeholder="http://localhost:8000"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                        <span class="btn-text">Analyze Drug</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </form>
+
+                <!-- Status Messages -->
+                <div id="statusMessage" class="status-message" style="display: none;"></div>
+            </section>
+
+            <!-- Right Panel - Results -->
+            <section class="results-section">
+                <h2>Analysis Results</h2>
+                
+                <div id="resultsContainer" class="results-container">
+                    <div class="empty-state">
+                        <p>👉 Enter a drug name and indication to begin analysis</p>
+                    </div>
+                </div>
+
+                <!-- Loading Skeleton -->
+                <div id="loadingSkeleton" style="display: none;" class="loading-skeleton">
+                    <div class="skeleton-card">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Detailed Results -->
+    <div id="detailsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Agent Analysis Details</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

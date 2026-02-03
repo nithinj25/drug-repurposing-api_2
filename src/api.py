@@ -92,13 +92,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Add CORS middleware BEFORE any other middleware
+# This allows requests from Lovable, ngrok, and any other domain
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[
+        "*",  # Allow all origins
+    ],
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, OPTIONS, etc.)
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=["*"],  # Expose all response headers to client
+    max_age=600,  # Cache preflight response for 10 minutes
 )
 
 # Global MasterAgent instance
@@ -192,6 +197,38 @@ async def get_job_status(job_id: str):
             "job_id": job_id,
             "data": job_data
         }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching job status: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching job status: {str(e)}"
+        )
+
+
+@app.get("/jobs/{job_id}", response_model=Dict[str, Any])
+async def get_job_status_plural(job_id: str):
+    """
+    Get the status and results of a specific job (plural endpoint for React app).
+    
+    Args:
+        job_id: The job ID returned from /analyze endpoint
+    
+    Returns:
+        Current job status with all agent results and reasoning output
+    """
+    try:
+        if job_id not in master_agent.job_store:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Job {job_id} not found"
+            )
+        
+        job_data = master_agent.get_job_status(job_id)
+        
+        return job_data
     
     except HTTPException:
         raise
