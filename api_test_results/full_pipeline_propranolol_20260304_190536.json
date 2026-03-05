@@ -1,0 +1,416 @@
+{
+  "success": true,
+  "data": {
+    "drug_name": "propranolol",
+    "chembl_id": "CHEMBL1671",
+    "drug_profile": {
+      "chembl_id": "CHEMBL1671",
+      "synonyms": [
+        "Propranolol hydrochloride intensol",
+        "Cardinol",
+        "Betadur cr",
+        "Inderal",
+        "Propanix-40",
+        "Half beta-prograne mr",
+        "Dociton",
+        "Syprol",
+        "Propanix-160 sr",
+        "Inderal la",
+        "AY 64043",
+        "AY-64043",
+        "Beprane",
+        "Half propanix la",
+        "Sagittol",
+        "Slo-pro",
+        "Innopran",
+        "Hemangiol",
+        "Sloprolol",
+        "Avlocardyl",
+        "Bedranol s.r.",
+        "Propatard la",
+        "Slo-blok",
+        "Propanix-80",
+        "Propanix-10",
+        "Beta-prograne mr",
+        "Propanix la",
+        "Inderalici",
+        "Half-beprane cr",
+        "Probeta la",
+        "Half propatard la",
+        "Anaprilin",
+        "Caridolol",
+        "Lopranol la",
+        "Apsolol",
+        "NSC-91523",
+        "PROPRANOLOL HYDROCHLORIDE",
+        "Indobloc",
+        "Angilol",
+        "Deralin",
+        "Hemangeol",
+        "Pylapron",
+        "Lederpronol",
+        "Monoprolol",
+        "Dupromex",
+        "Sumial",
+        "ICI 45520",
+        "Propranolol hydrochloride",
+        "Bedranol",
+        "Half-inderal la",
+        "Berkolol",
+        "Tesnol",
+        "ICI-45520",
+        "Innopran xl",
+        "Obsidan",
+        "Half-betadur cr",
+        "Propanix-160",
+        "Rapranol sr"
+      ],
+      "known_targets": [
+        {
+          "target_chembl_id": "CHEMBL213",
+          "target_name": "ADRB1",
+          "target_name_raw": "Beta-1 adrenergic receptor",
+          "target_gene_symbol": "ADRB1",
+          "target_type": "SINGLE PROTEIN",
+          "organism": "Homo sapiens",
+          "action_type": "ANTAGONIST",
+          "mechanism_of_action": "Beta-1 adrenergic receptor antagonist"
+        },
+        {
+          "target_chembl_id": "CHEMBL210",
+          "target_name": "ADRB2",
+          "target_name_raw": "Beta-2 adrenergic receptor",
+          "target_gene_symbol": "ADRB2",
+          "target_type": "SINGLE PROTEIN",
+          "organism": "Homo sapiens",
+          "action_type": "ANTAGONIST",
+          "mechanism_of_action": "Beta-2 adrenergic receptor antagonist"
+        }
+      ],
+      "approved_indications": [
+        "Hypertension",
+        "Hemangioma",
+        "Stroke",
+        "Angina Pectoris",
+        "Arrhythmias, Cardiac",
+        "Wolff-Parkinson-White Syndrome",
+        "Coronary Artery Disease",
+        "Migraine Disorders"
+      ],
+      "max_phase": "4.0",
+      "mechanism_of_action": "Beta-1 adrenergic receptor antagonist",
+      "drug_class": "PROPRANOLOL"
+    },
+    "discovery_result": {
+      "candidates_found": 10,
+      "top_candidates": [
+        {
+          "disease_name": "ocular hypertension",
+          "mechanistic_score": 0.853,
+          "linking_targets": [
+            "ADRB1",
+            "ADRB2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "Airway obstruction",
+          "mechanistic_score": 0.852,
+          "linking_targets": [
+            "ADRB2"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "myocardial infarction",
+          "mechanistic_score": 0.846,
+          "linking_targets": [
+            "ADRB1",
+            "ADRB2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "Sepsis",
+          "mechanistic_score": 0.818,
+          "linking_targets": [
+            "ADRB1",
+            "ADRB2"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "Ventricular arrhythmia",
+          "mechanistic_score": 0.803,
+          "linking_targets": [
+            "ADRB1",
+            "ADRB2"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "emphysema",
+          "mechanistic_score": 0.79,
+          "linking_targets": [
+            "ADRB2"
+          ],
+          "therapeutic_area": "Respiratory"
+        },
+        {
+          "disease_name": "sudden cardiac arrest",
+          "mechanistic_score": 0.78,
+          "linking_targets": [
+            "ADRB1",
+            "ADRB2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "chronic bronchitis",
+          "mechanistic_score": 0.779,
+          "linking_targets": [
+            "ADRB2"
+          ],
+          "therapeutic_area": "Respiratory"
+        },
+        {
+          "disease_name": "septic shock",
+          "mechanistic_score": 0.756,
+          "linking_targets": [
+            "ADRB1"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "essential hypertension",
+          "mechanistic_score": 0.741,
+          "linking_targets": [
+            "ADRB1"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        }
+      ]
+    },
+    "candidates": [
+      {
+        "indication": "ocular hypertension",
+        "mechanistic_score": 0.853,
+        "linking_targets": [
+          "ADRB1",
+          "ADRB2"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "propranolol",
+            "indication": "ocular hypertension",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "ADRB2",
+              "PTGFR",
+              "ADRB1",
+              "CA2",
+              "ROCK1",
+              "ROCK2",
+              "CHRM3",
+              "CHRM1",
+              "ADRA2B",
+              "ADRA2C",
+              "ADRA2A",
+              "PTGER2",
+              "KIF20B",
+              "GCFC2",
+              "CES5A",
+              "ZNRF4",
+              "TUT7",
+              "DDOST",
+              "DENND5A",
+              "GRIK1",
+              "CRPPA",
+              "ADORA1",
+              "CHD9",
+              "ANGPTL4",
+              "ITGB4",
+              "NR3C1",
+              "TIMELESS",
+              "RPUSD3",
+              "SLC2A9",
+              "CFAP61",
+              "COL24A1",
+              "MARCHF9"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:35:31.644378+00:00",
+            "summary": "Propranolol shows low mechanistic plausibility for ocular hypertension (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      },
+      {
+        "indication": "Airway obstruction",
+        "mechanistic_score": 0.852,
+        "linking_targets": [
+          "ADRB2"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "propranolol",
+            "indication": "Airway obstruction",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "ADRB2",
+              "NR3C1",
+              "PDE4A",
+              "PDE4D",
+              "PDE4B",
+              "PDE4C",
+              "CHRM3",
+              "PDE3A",
+              "ADRB3",
+              "ADRB1",
+              "CYSLTR1",
+              "ADORA1",
+              "ADORA2A",
+              "ADORA2B",
+              "PDE3B",
+              "ADORA3",
+              "ADRA1D",
+              "IL5",
+              "ADRA2B",
+              "ADRA1A",
+              "ADRA1B",
+              "ADRA2C",
+              "ADRA2A",
+              "IGHE",
+              "TSLP",
+              "TBXA2R",
+              "IL5RA",
+              "PDE10A",
+              "PDE5A",
+              "CHRM1"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:35:33.909882+00:00",
+            "summary": "Propranolol shows low mechanistic plausibility for airway obstruction (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      },
+      {
+        "indication": "myocardial infarction",
+        "mechanistic_score": 0.846,
+        "linking_targets": [
+          "ADRB1",
+          "ADRB2"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "propranolol",
+            "indication": "myocardial infarction",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "PCSK9",
+              "ADRB1",
+              "LDLR",
+              "P2RY12",
+              "ADRB3",
+              "AGTR1",
+              "HMGCR",
+              "ACE",
+              "ADRB2",
+              "ADRA1A",
+              "PLAT",
+              "ADRA1D",
+              "NR3C2",
+              "ADRA1B",
+              "PTGS2",
+              "CACNA1C",
+              "SERPINC1",
+              "SLC12A3",
+              "CACNA1D",
+              "CACNA1F",
+              "CACNA1S",
+              "GUCY1B1",
+              "APOE",
+              "SORT1",
+              "PTGS1",
+              "LPA",
+              "PLG",
+              "CELSR2",
+              "FURIN",
+              "GUCY1B2",
+              "ITGB3",
+              "LIPA",
+              "FES",
+              "LPL",
+              "TCF21",
+              "APOB",
+              "COL4A1",
+              "GUCY1A1",
+              "ITGA2B",
+              "HHIPL1",
+              "ZC3HC1",
+              "COL4A2",
+              "F2R",
+              "PHACTR1",
+              "SERPINH1",
+              "EDNRA",
+              "VKORC1",
+              "SH2B3",
+              "MIA3",
+              "DPP4"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:35:36.472040+00:00",
+            "summary": "Propranolol shows low mechanistic plausibility for myocardial infarction (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      }
+    ]
+  }
+}

@@ -47,12 +47,14 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 
 class DecisionLevel(Enum):
-    """Decision outcome levels"""
-    REJECT = "reject"           # Hard veto (safety/IP)
-    NOT_RECOMMENDED = "not_recommended"  # Low feasibility
-    REVIEW_REQUIRED = "review_required"  # Moderate, needs expert review
-    RECOMMENDED = "recommended"          # Good feasibility
-    HIGHLY_RECOMMENDED = "highly_recommended"  # Excellent feasibility
+    """Decision outcome levels - Master Plan Priority #2: Tiered decision logic"""
+    BLOCKED_BY_PATENT = "blocked_by_patent"  # Stage 2 gate failed: hard patent veto
+    ESCALATE_HUMAN_REVIEW = "escalate_human_review"  # Stage 3 gate: safety hard_stop
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"  # Doesn't meet any tier criteria
+    TIER_3_SPECULATIVE = "tier_3_speculative"  # Tier 3: literature exists (>= 3 papers)
+    TIER_2_PLAUSIBLE = "tier_2_plausible"  # Tier 2: moderate molecular + safety
+    TIER_1_CONFIRMED = "tier_1_confirmed"  # Tier 1: strong evidence across all dimensions
+    REJECT = "reject"  # Legacy - Stage 1 gate failed or constraint violation
 
 
 class EvidenceType(Enum):
@@ -554,7 +556,7 @@ class ScoringEngine:
         dimension: DimensionType,
         evidence: List[Evidence]
     ) -> DimensionScore:
-        """Score a specific dimension"""
+        """CRITICAL FIX #5: Score a dimension with quality-weighted differentiation"""
         dim_evidence = [e for e in evidence if e.dimension == dimension]
         
         if not dim_evidence:
@@ -569,28 +571,70 @@ class ScoringEngine:
                 explanation=f"No evidence found for {dimension.value}"
             )
         
-        # Compute weighted score
-        positive_evidence = [e for e in dim_evidence if e.polarity == "positive"]
-        negative_evidence = [e for e in dim_evidence if e.polarity == "negative"]
+        # Categorize evidence by quality tier (clinical trials > specific literature > generic literature)
+        clinical_evidence = [e for e in dim_evidence if e.source_agent == EvidenceType.CLINICAL]
+        molecular_evidence = [e for e in dim_evidence if e.source_agent == EvidenceType.MOLECULAR]
+        patent_evidence = [e for e in dim_evidence if e.source_agent == EvidenceType.PATENT]
+        other_evidence = [e for e in dim_evidence if e.source_agent not in [EvidenceType.CLINICAL, EvidenceType.MOLECULAR, EvidenceType.PATENT]]
         
-        # Weighted average based on confidence
-        total_weight = sum(e.confidence for e in dim_evidence)
-        if total_weight > 0:
-            score = sum(
-                e.confidence * (1.0 if e.polarity == "positive" else (0.0 if e.polarity == "negative" else 0.5))
-                for e in dim_evidence
-            ) / total_weight
+        # QUALITY-WEIGHTED SCORING:
+        # Clinical evidence: 2.0x multiplier (highest quality)
+        # Molecular evidence: 1.5x multiplier (mechanism-specific)
+        # Patent evidence: 1.0x (foundational)
+        # Other evidence: 0.7x (general)
+        
+        weighted_scores = []
+        evidence_weights = {
+            EvidenceType.CLINICAL: (clinical_evidence, 2.0),
+            EvidenceType.MOLECULAR: (molecular_evidence, 1.5),
+            EvidenceType.PATENT: (patent_evidence, 1.0),
+        }
+        
+        for ev_type, (ev_list, weight_multiplier) in evidence_weights.items():
+            for e in ev_list:
+                # Convert polarity to base score (0-1)
+                base_score = 1.0 if e.polarity == "positive" else (0.0 if e.polarity == "negative" else 0.5)
+                # Apply confidence AND quality multiplier
+                weighted_scores.append(base_score * e.confidence * weight_multiplier)
+        
+        # Generic evidence at lower weight
+        for e in other_evidence:
+            base_score = 1.0 if e.polarity == "positive" else (0.0 if e.polarity == "negative" else 0.5)
+            weighted_scores.append(base_score * e.confidence * 0.7)
+        
+        # Normalize by evidence count bonus (more evidence = slightly higher score)
+        # But cap at 1.0
+        if weighted_scores:
+            base_score = sum(weighted_scores) / len(weighted_scores)
+            # Bonus for quantity: +5% per evidence item, capped at +15%
+            quantity_bonus = min(0.15, len(dim_evidence) * 0.05)
+            score = min(1.0, base_score + quantity_bonus)
         else:
             score = 0.5
         
-        # Aggregate confidence
-        avg_confidence = sum(e.confidence for e in dim_evidence) / len(dim_evidence)
+        # Confidence based on evidence consistency, not just average
+        positive_evidence = [e for e in dim_evidence if e.polarity == "positive"]
+        negative_evidence = [e for e in dim_evidence if e.polarity == "negative"]
         
-        # Extract key factors
-        key_factors = [e.content[:100] for e in sorted(dim_evidence, key=lambda x: x.confidence, reverse=True)[:3]]
+        # If evidence is conflicting, reduce confidence
+        if positive_evidence and negative_evidence:
+            conflict_ratio = len(negative_evidence) / (len(positive_evidence) + len(negative_evidence))
+            avg_confidence = (sum(e.confidence for e in dim_evidence) / len(dim_evidence)) * (1.0 - 0.3 * conflict_ratio)
+        else:
+            avg_confidence = sum(e.confidence for e in dim_evidence) / len(dim_evidence) if dim_evidence else 0.5
+        
+        # Extract key factors (prioritize clinical evidence)
+        key_factors = []
+        for e in sorted(clinical_evidence, key=lambda x: x.confidence, reverse=True)[:2]:
+            key_factors.append(f"[CLINICAL] {e.content[:80]}")
+        for e in sorted(molecular_evidence, key=lambda x: x.confidence, reverse=True)[:1]:
+            key_factors.append(f"[MECHANISM] {e.content[:80]}")
+        
+        if not key_factors:
+            key_factors = [e.content[:100] for e in sorted(dim_evidence, key=lambda x: x.confidence, reverse=True)[:3]]
         
         # Generate explanation
-        explanation = self._generate_dimension_explanation(dimension, score, dim_evidence)
+        explanation = self._generate_dimension_explanation(dimension, score, dim_evidence, clinical_evidence, molecular_evidence)
         
         return DimensionScore(
             dimension=dimension,
@@ -607,21 +651,42 @@ class ScoringEngine:
         self,
         dimension: DimensionType,
         score: float,
-        evidence: List[Evidence]
+        evidence: List[Evidence],
+        clinical_evidence: List[Evidence] = None,
+        molecular_evidence: List[Evidence] = None
     ) -> str:
-        """Generate human-readable explanation for dimension score"""
+        """Generate human-readable explanation for dimension score highlighting evidence quality"""
         pos_count = sum(1 for e in evidence if e.polarity == "positive")
         neg_count = sum(1 for e in evidence if e.polarity == "negative")
         
-        if score > 0.7:
+        if clinical_evidence is None:
+            clinical_evidence = [e for e in evidence if e.source_agent == EvidenceType.CLINICAL]
+        if molecular_evidence is None:
+            molecular_evidence = [e for e in evidence if e.source_agent == EvidenceType.MOLECULAR]
+        
+        if score > 0.75:
             quality = "Strong"
-        elif score > 0.5:
+        elif score > 0.6:
             quality = "Moderate"
-        else:
+        elif score > 0.4:
             quality = "Weak"
+        else:
+            quality = "Very Weak"
+        
+        # Highlight evidence types
+        evidence_sources = []
+        if clinical_evidence:
+            evidence_sources.append(f"Clinical ({len(clinical_evidence)} items)")
+        if molecular_evidence:
+            evidence_sources.append(f"Mechanistic ({len(molecular_evidence)} items)")
+        other_count = len(evidence) - len(clinical_evidence) - len(molecular_evidence)
+        if other_count > 0:
+            evidence_sources.append(f"Other ({other_count} items)")
+        
+        sources_str = " + ".join(evidence_sources) if evidence_sources else "unspecified"
         
         return (f"{quality} {dimension.value.replace('_', ' ')}: "
-                f"Score {score:.2f} based on {len(evidence)} evidence items "
+                f"Score {score:.2f} from {sources_str} "
                 f"({pos_count} supporting, {neg_count} contradicting)")
     
     def compute_composite_score(
@@ -916,8 +981,8 @@ class ReasoningAgent:
         # 5. Detect contradictions
         contradictions = self.contradiction_detector.detect_contradictions(evidence)
         
-        # 6. Determine decision level
-        decision = self._determine_decision(composite_score, constraints)
+        # 6. Determine decision level using TIERED LOGIC
+        decision = self._determine_decision(composite_score, constraints, dimension_scores, agent_results)
         
         # 7. Generate explanation
         explanation = self.explainability.explain_hypothesis(
@@ -946,24 +1011,104 @@ class ReasoningAgent:
     def _determine_decision(
         self,
         composite_score: float,
-        constraints: List[Constraint]
+        constraints: List[Constraint],
+        dimension_scores: List[DimensionScore],
+        agent_results: Dict[str, Dict]
     ) -> DecisionLevel:
-        """Determine decision level based on score and constraints"""
-        # Hard vetoes
-        if any(c.is_violated for c in constraints):
+        """
+        Determine decision level using TIERED LOGIC (Master Plan Priority #2)
+        Replace weighted scoring with explicit tier assignment.
+        
+        Tier 1 (CONFIRMED): mol > 0.4 AND lit in [A,B] AND safe > 0.7 AND clin exists
+        Tier 2 (PLAUSIBLE): mol > 0.2 AND safe > 0.5
+        Tier 3 (SPECULATIVE): literature.paper_count >= 3
+        Else: INSUFFICIENT_EVIDENCE
+        
+        Hard vetoes override:
+        - patent_hard_veto → BLOCKED_BY_PATENT
+        - safety_hard_stop → ESCALATE_HUMAN_REVIEW
+        - Stage 1 gate failed → REJECT
+        """
+        
+        # ========== GATE CHECKS: Stages 1, 2, 3 ==========
+        
+        # Stage 1 Gate: Molecular mechanistic overlap (checked by MolecularAgent)
+        molecular_result = agent_results.get("molecular", {})
+        if not molecular_result.get("gate_passed", True):
+            logger.warning(f"❌ Stage 1 GATE FAILED: {molecular_result.get('gate_rejection_reason', 'Unknown')}")
             return DecisionLevel.REJECT
         
-        # Score-based decisions
-        if composite_score >= 0.8:
-            return DecisionLevel.HIGHLY_RECOMMENDED
-        elif composite_score >= 0.65:
-            return DecisionLevel.RECOMMENDED
-        elif composite_score >= 0.45:
-            return DecisionLevel.REVIEW_REQUIRED
-        elif composite_score >= 0.25:
-            return DecisionLevel.NOT_RECOMMENDED
-        else:
+        # Stage 2 Gate: Patent freedom-to-operate (checked by PatentAgent)
+        patent_result = agent_results.get("patent", {})
+        if patent_result.get("hard_veto", False):
+            logger.warning(f"❌ Stage 2 GATE FAILED: {patent_result.get('hard_veto_reason', 'Blocking patent exists')}")
+            return DecisionLevel.BLOCKED_BY_PATENT
+        
+        # Stage 3 Gate: Safety (soft gate - escalate but continue)
+        safety_result = agent_results.get("safety", {})
+        if safety_result.get("hard_stop", False):
+            logger.warning(f"⚠️  Stage 3 SOFT GATE: {safety_result.get('hard_stop_reason', 'Population-critical safety concern')}")
+            # Don't return yet - check other constraints first, but will escalate if passes tiers
+        
+        # Legacy constraint violations (fallback)
+        if any(c.is_violated for c in constraints):
+            logger.warning("Legacy constraint violation detected")
             return DecisionLevel.REJECT
+        
+        # ========== EXTRACT SCORES FROM DIMENSIONS ==========
+        
+        dim_score_map = {}
+        for dim_score in dimension_scores:
+            dim_score_map[dim_score.dimension] = dim_score.score
+        
+        molecular_score = dim_score_map.get(DimensionType.MOLECULAR_RATIONALE, 0.0)
+        safety_score = dim_score_map.get(DimensionType.SAFETY_PROFILE, 0.0)
+        clinical_score = dim_score_map.get(DimensionType.CLINICAL_EVIDENCE, 0.0)
+        
+        # Extract literature grade and paper count from literature_agent result
+        literature_result = agent_results.get("literature", {})
+        literature_grade = literature_result.get("grade", "E")  # A, B, C, D, E
+        paper_count = literature_result.get("paper_count", 0)
+        
+        logger.info(f"Tier Assessment | mol={molecular_score:.2f} lit={literature_grade} safe={safety_score:.2f} clin={clinical_score:.2f} papers={paper_count}")
+        
+        # ========== TIERED DECISION LOGIC ==========
+        
+        # Tier 1: CONFIRMED - Strong evidence across all dimensions
+        # mol > 0.4 AND lit in [A,B] AND safe > 0.7 AND clin exists
+        if (molecular_score > 0.4 and 
+            literature_grade in ["A", "B"] and 
+            safety_score > 0.7 and 
+            clinical_score > 0.0):  # Clinical evidence exists
+            
+            # If safety hard_stop, escalate instead of confirming
+            if safety_result.get("hard_stop", False):
+                logger.info("✅ TIER 1 criteria met, but ESCALATING due to safety hard_stop")
+                return DecisionLevel.ESCALATE_HUMAN_REVIEW
+            
+            logger.info("✅ TIER 1: CONFIRMED - Strong mechanistic, literature, safety, and clinical evidence")
+            return DecisionLevel.TIER_1_CONFIRMED
+        
+        # Tier 2: PLAUSIBLE - Moderate molecular + safety evidence
+        # mol > 0.2 AND safe > 0.5
+        if molecular_score > 0.2 and safety_score > 0.5:
+            # If safety hard_stop, escalate
+            if safety_result.get("hard_stop", False):
+                logger.info("✅ TIER 2 criteria met, but ESCALATING due to safety hard_stop")
+                return DecisionLevel.ESCALATE_HUMAN_REVIEW
+            
+            logger.info("✅ TIER 2: PLAUSIBLE - Moderate mechanistic and safety evidence")
+            return DecisionLevel.TIER_2_PLAUSIBLE
+        
+        # Tier 3: SPECULATIVE - Minimal literature support
+        # literature.paper_count >= 3
+        if paper_count >= 3:
+            logger.info("✅ TIER 3: SPECULATIVE - Literature support exists (>= 3 papers)")
+            return DecisionLevel.TIER_3_SPECULATIVE
+        
+        # No tier criteria met
+        logger.info("❌ INSUFFICIENT_EVIDENCE - Does not meet any tier criteria")
+        return DecisionLevel.INSUFFICIENT_EVIDENCE
     
     def rank_hypotheses(self, hypotheses: List[Hypothesis]) -> List[Hypothesis]:
         """Rank hypotheses by composite score"""
@@ -1024,9 +1169,12 @@ class ReasoningAgent:
             processing_time_ms=processing_time,
             metadata={
                 "hypothesis_count": len(hypotheses),
-                "highly_recommended": sum(1 for h in hypotheses if h.decision == DecisionLevel.HIGHLY_RECOMMENDED),
-                "recommended": sum(1 for h in hypotheses if h.decision == DecisionLevel.RECOMMENDED),
-                "review_required": sum(1 for h in hypotheses if h.decision == DecisionLevel.REVIEW_REQUIRED),
+                "tier_1_confirmed": sum(1 for h in hypotheses if h.decision == DecisionLevel.TIER_1_CONFIRMED),
+                "tier_2_plausible": sum(1 for h in hypotheses if h.decision == DecisionLevel.TIER_2_PLAUSIBLE),
+                "tier_3_speculative": sum(1 for h in hypotheses if h.decision == DecisionLevel.TIER_3_SPECULATIVE),
+                "insufficient_evidence": sum(1 for h in hypotheses if h.decision == DecisionLevel.INSUFFICIENT_EVIDENCE),
+                "escalate_human_review": sum(1 for h in hypotheses if h.decision == DecisionLevel.ESCALATE_HUMAN_REVIEW),
+                "blocked_by_patent": sum(1 for h in hypotheses if h.decision == DecisionLevel.BLOCKED_BY_PATENT),
                 "rejected": sum(1 for h in hypotheses if h.decision == DecisionLevel.REJECT)
             }
         )

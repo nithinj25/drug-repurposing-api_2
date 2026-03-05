@@ -1,0 +1,1 @@
+﻿{"success":true,"data":{"error":"IndicationDiscovery failed: 'DrugProfile' object has no attribute 'get'","drug_name":"aspirin","chembl_id":"CHEMBL25"}}

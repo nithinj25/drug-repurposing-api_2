@@ -31,6 +31,9 @@ try:
 except ImportError:
     pass
 
+# Import market intelligence API
+from src.utils.market_intelligence_api import get_market_intelligence_client
+
 # LangChain imports
 try:
     from langchain_openai import ChatOpenAI
@@ -144,6 +147,7 @@ class CompetitorProgram:
     market_share_estimate: float = 0.0
     launch_price_estimate: Optional[float] = None  # USD per unit/dose
     key_patents: List[str] = field(default_factory=list)
+    patent_expiry_date: Optional[str] = None  # YYYY-MM-DD format
     differentiation_factors: List[str] = field(default_factory=list)
     threat_level: CompetitorThreat = CompetitorThreat.MODERATE
     data_sources: List[str] = field(default_factory=list)
@@ -218,6 +222,8 @@ class MarketSnapshot:
     key_insights: List[str] = field(default_factory=list)
     data_confidence_score: float = 0.7
     market_opportunity_score: float = 0.6
+    unmet_need_score: float = 0.5  # 0-1 scale of unmet medical need
+    opportunity_label: Optional[str] = None  # WHITESPACE, BIOSIMILAR_WINDOW, RESCUE_REPURPOSING, PEDIATRIC_GAP
     prevalence_adjustment: float = 1.0
     embedding: Optional[List[float]] = None
     created_at: datetime = field(default_factory=datetime.utcnow)
@@ -262,7 +268,7 @@ class MarketDataConnector(ABC):
 
 
 class IQVIAConnector(MarketDataConnector):
-    """Connector to IQVIA market data (mock)"""
+    """Connector to IQVIA market data (requires licensed API access)"""
     
     def __init__(self):
         super().__init__("IQVIA")
@@ -271,40 +277,14 @@ class IQVIAConnector(MarketDataConnector):
     def fetch_market_data(self, drug_name: str, indication: str) -> Dict:
         """Fetch IQVIA market data"""
         logger.info(f"Fetching IQVIA market data for {drug_name} + {indication}")
-        
-        # Mock market data
-        return {
-            "source": "IQVIA",
-            "market_sizes": [
-                {"year": 2021, "market_size_usd": 1500, "units": 5000000},
-                {"year": 2022, "market_size_usd": 1850, "units": 5500000},
-                {"year": 2023, "market_size_usd": 2200, "units": 6000000},
-            ],
-            "growth_rate": 18.5,  # CAGR %
-            "patient_population": 3500000,
-            "average_cost_per_patient": 650,
-        }
+        logger.warning("IQVIA connector has no public API configured; returning no market data")
+        return {}
     
     def fetch_competitor_data(self, indication: str) -> List[Dict]:
         """Fetch competitor market share and programs"""
         logger.info(f"Fetching IQVIA competitor data for {indication}")
-        
-        return [
-            {
-                "company": "Pharma Corp",
-                "drug": "DrugX",
-                "market_share": 0.35,
-                "launch_year": 2019,
-                "annual_sales": 850,
-            },
-            {
-                "company": "BioGen Inc",
-                "drug": "DrugY",
-                "market_share": 0.28,
-                "launch_year": 2020,
-                "annual_sales": 680,
-            },
-        ]
+        logger.warning("IQVIA competitor feed unavailable without licensed integration; returning no competitor data")
+        return []
 
 
 class GlobalDataConnector(MarketDataConnector):
@@ -708,12 +688,19 @@ class MarketAnalyticsEngine:
     def _llm_generate_insights(self, snapshot: "MarketSnapshot") -> List[str]:
         """Use LLM to generate market insights"""
         
+        # CRITICAL FIX: Check if tam_estimate exists before accessing attributes
+        tam_info = "Unknown TAM"
+        cagr_info = "Unknown CAGR"
+        if snapshot.tam_estimate:
+            tam_info = f"${snapshot.tam_estimate.tam_usd:.0f}M"
+            cagr_info = f"{snapshot.tam_estimate.cagr_percent}%"
+        
         # Compile market context
         context = f"""Market Analysis Context:
 Drug: {snapshot.drug_name}
 Indication: {snapshot.indication}
-TAM: ${snapshot.tam_estimate.tam_usd:.0f}M
-CAGR: {snapshot.tam_estimate.cagr_percent}%
+TAM: {tam_info}
+CAGR: {cagr_info}
 Competitors: {len(snapshot.competitors)}
 Market Phase: {snapshot.market_phase.value}"""
         
@@ -739,8 +726,8 @@ Focus on: market opportunity, competitive landscape, payer dynamics, pricing str
         
         insights = []
         
-        # TAM insight
-        if snapshot.tam_estimate:
+        # TAM insight (CRITICAL FIX: check for None)
+        if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd:
             insights.append(
                 f"TAM of ${snapshot.tam_estimate.tam_usd:.0f}M with {snapshot.tam_estimate.cagr_percent}% "
                 f"CAGR represents significant commercial opportunity in {snapshot.indication}."
@@ -801,7 +788,73 @@ class MarketIngestionPipeline:
         
         logger.info(f"Normalized: {normalized_drug['brand']} | {normalized_indication}")
         
-        # Fetch market data from connectors
+        # Create snapshot
+        snapshot = MarketSnapshot(
+            snapshot_id=str(uuid.uuid4()),
+            drug_name=normalized_drug['brand'],
+            indication=normalized_indication,
+            geography=geography,
+            market_phase=self._determine_market_phase(indication),
+        )
+        
+        # ========== ENHANCED: Use Market Intelligence API ==========
+        try:
+            logger.info(f"Fetching market data from APIs...")
+            market_api = get_market_intelligence_client()
+            
+            # Get comprehensive market data
+            market_data_api = market_api.get_market_data(indication)
+            
+            if market_data_api:
+                # Create TAM estimate from API data
+                snapshot.tam_estimate = TAMEstimate(
+                    tam_id=str(uuid.uuid4()),
+                    geography=geography,
+                    indication=indication,
+                    patient_population=market_data_api.affected_population or 1_000_000,
+                    average_treatment_cost=self._estimate_treatment_cost(indication),
+                    penetration_rate=market_data_api.treatment_rate or 0.30,
+                    tam_usd=(market_data_api.affected_population or 1_000_000) * 
+                            self._estimate_treatment_cost(indication) *
+                            (market_data_api.treatment_rate or 0.30) / 1_000_000,  # Convert to millions
+                    cagr_percent=self._estimate_cagr(indication),
+                    forecast_years=5,
+                    confidence_level=market_data_api.market_confidence,
+                    methodology="api_aggregated",
+                )
+                
+                logger.info(f"✓ Got TAM=${snapshot.tam_estimate.tam_usd:.1f}M from Market Intelligence API")
+            
+            # Get competitive landscape
+            competitive_data = market_api.get_competitive_landscape(indication, drug_name)
+            
+            # Convert API competitors to CompetitorProgram objects
+            for comp in competitive_data.get('competitive_set', []):
+                competitor = CompetitorProgram(
+                    program_id=str(uuid.uuid4()),
+                    company_name="Unknown",  # Would need additional lookup
+                    drug_name=comp['name'],
+                    indication=indication,
+                    mechanism=comp['evidence'],
+                    development_stage="Approved",
+                    market_share_estimate=comp['market_share'],
+                    differentiation_factors=[comp['positioning']],
+                    threat_level=self._assess_threat_level(comp['market_share']),
+                    data_sources=market_data_api.data_sources,
+                )
+                snapshot.competitors.append(competitor)
+            
+            # Store white space assessment
+            snapshot.key_insights.append(f"Market Concentration (HHI): {competitive_data.get('market_concentration', 'Unknown')}")
+            snapshot.key_insights.append(f"White Space: {competitive_data.get('white_space_opportunity', 'Unknown')}")
+            
+            logger.info(f"✓ Identified {len(snapshot.competitors)} competitors from Market Intelligence API")
+            
+        except Exception as e:
+            logger.warning(f"Market Intelligence API error: {e}, falling back to connectors")
+        
+        # ========== FALLBACK: Try traditional connectors ==========
+        # Fetch market data from traditional connectors (if APIs fail)
         market_data = {}
         competitor_data = []
         
@@ -818,17 +871,8 @@ class MarketIngestionPipeline:
             except Exception as e:
                 logger.warning(f"Error fetching from {source_name}: {e}")
         
-        # Create snapshot
-        snapshot = MarketSnapshot(
-            snapshot_id=str(uuid.uuid4()),
-            drug_name=normalized_drug['brand'],
-            indication=normalized_indication,
-            geography=geography,
-            market_phase=self._determine_market_phase(indication),
-        )
-        
-        # Estimate TAM
-        if market_data:
+        # Estimate TAM from connectors if API didn't provide data
+        if not snapshot.tam_estimate and market_data:
             iqvia = market_data.get('iqvia', {})
             patient_pop = iqvia.get('patient_population', 2000000)
             avg_cost = iqvia.get('average_cost_per_patient', 500)
@@ -856,14 +900,13 @@ class MarketIngestionPipeline:
                 min(1.0, snapshot.market_opportunity_score * snapshot.prevalence_adjustment)
             )
         
-        # Process competitors
-        competitor_programs = self._normalize_competitors(competitor_data)
-        competitor_programs, threat_summary = self.analytics.assess_competitor_threat(
-            competitor_programs
-        )
-        snapshot.competitors = competitor_programs
-        
-        # Mock payer signals
+        # Process competitors from connectors if API didn't find any
+        if not snapshot.competitors and competitor_data:
+            competitor_programs = self._normalize_competitors(competitor_data)
+            competitor_programs, threat_summary = self.analytics.assess_competitor_threat(
+                competitor_programs
+            )
+            snapshot.competitors = competitor_programs
         snapshot.payer_signals = self._generate_payer_signals(indication)
         
         # Generate insights
@@ -889,7 +932,11 @@ class MarketIngestionPipeline:
         # Store
         self.market_store[snapshot.snapshot_id] = snapshot
         
-        logger.info(f"Market analysis complete: TAM=${snapshot.tam_estimate.tam_usd:.0f}M")
+        # CRITICAL FIX: Check tam_estimate before logging
+        if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd:
+            logger.info(f"Market analysis complete: TAM=${snapshot.tam_estimate.tam_usd:.0f}M")
+        else:
+            logger.info("Market analysis complete: no real market size data available from configured connectors")
         return snapshot
     
     def _determine_market_phase(self, indication: str) -> MarketPhase:
@@ -926,40 +973,19 @@ class MarketIngestionPipeline:
         return programs
     
     def _generate_payer_signals(self, indication: str) -> List[PayerSignal]:
-        """Generate mock payer signals"""
-        
-        signals = [
-            PayerSignal(
-                signal_id=str(uuid.uuid4()),
-                payer_name="UnitedHealth",
-                indication=indication,
-                reimbursement_status=ReimbursementStatus.COVERED,
-                coverage_policy="Coverage with no quantity limits for FDA-approved indication",
-                formulary_tier="Tier 2",
-                managed_care_penetration=0.28,
-            ),
-            PayerSignal(
-                signal_id=str(uuid.uuid4()),
-                payer_name="Aetna",
-                indication=indication,
-                reimbursement_status=ReimbursementStatus.RESTRICTED,
-                coverage_policy="Prior authorization required. Limited to 1 fill per month.",
-                prior_auth_required=True,
-                quantity_limits="1 fill per month",
-                formulary_tier="Tier 3",
-                managed_care_penetration=0.18,
-            ),
-        ]
-        
-        return signals
+        """Return payer signals only from real integrated payer feeds (none configured)."""
+        return []
     
     def _generate_market_summary(self, snapshot: MarketSnapshot) -> str:
         """Generate human-readable market summary"""
         
         summary = f"The {snapshot.indication} market in {snapshot.geography} represents a TAM of "
         
-        if snapshot.tam_estimate:
+        # CRITICAL FIX: Check tam_estimate and tam_usd before accessing
+        if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd:
             summary += f"${snapshot.tam_estimate.tam_usd:.0f}M growing at {snapshot.tam_estimate.cagr_percent}% CAGR. "
+        else:
+            summary += "unknown size (no data available). "
         
         summary += f"Market is characterized as {snapshot.market_phase.value}. "
         
@@ -1132,6 +1158,11 @@ class MarketAgent:
             gtm_risks = self._identify_gtm_risks(snapshot)
             snapshot.go_to_market_risks = gtm_risks
             
+            # 3.5. Determine opportunity label (WHITESPACE, BIOSIMILAR_WINDOW, etc.)
+            opportunity_label = self._determine_opportunity_label(snapshot, options.get('failed_trials', []))
+            snapshot.opportunity_label = opportunity_label
+            logger.info(f"Opportunity label: {opportunity_label or 'None'}")
+            
             # 4. Compile result
             result = {
                 'agent': 'market_agent',
@@ -1147,12 +1178,18 @@ class MarketAgent:
                 'market_phase': snapshot.market_phase.value,
                 'data_confidence': snapshot.data_confidence_score,
                 'market_opportunity_score': snapshot.market_opportunity_score,
+                'unmet_need_score': snapshot.unmet_need_score,
+                'opportunity_label': snapshot.opportunity_label,
                 'prevalence_adjustment': snapshot.prevalence_adjustment,
                 'status': 'success',
                 'timestamp': datetime.now(UTC).isoformat(),
             }
             
-            logger.info(f"Market Agent: Complete. TAM=${snapshot.tam_estimate.tam_usd:.0f}M")
+            # CRITICAL FIX: Check tam_estimate before logging
+            if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd:
+                logger.info(f"Market Agent: Complete. TAM=${snapshot.tam_estimate.tam_usd:.0f}M")
+            else:
+                logger.info("Market Agent: Complete. No TAM returned because no real market connector data was available")
             return result
         
         except Exception as e:
@@ -1165,6 +1202,63 @@ class MarketAgent:
                 'error': str(e),
                 'timestamp': datetime.now(UTC).isoformat(),
             }
+    
+    def _assess_threat_level(self, market_share: float) -> CompetitorThreat:
+        """Assess competitive threat level based on market share"""
+        if market_share >= 0.30:
+            return CompetitorThreat.CRITICAL
+        elif market_share >= 0.15:
+            return CompetitorThreat.HIGH
+        elif market_share >= 0.05:
+            return CompetitorThreat.MODERATE
+        else:
+            return CompetitorThreat.LOW
+    
+    def _estimate_treatment_cost(self, indication: str) -> float:
+        """Estimate average treatment cost per patient per annum"""
+        # Fallback cost estimation by indication type
+        cost_map = {
+            'cardiovascular': 2000,
+            'diabetes': 1500,
+            'cancer': 100000,
+            'neurological': 3000,
+            'infectious': 5000,
+            'autoimmune': 20000,
+            'gastrointestinal': 800,
+            'respiratory': 1200,
+            'dermatology': 500,
+            'pain': 1000,
+        }
+        
+        # Try to match indication to cost
+        indication_lower = indication.lower()
+        for key, cost in cost_map.items():
+            if key in indication_lower:
+                return cost
+        
+        # Default: $2000/patient/year
+        return 2000
+    
+    def _estimate_cagr(self, indication: str) -> float:
+        """Estimate CAGR by indication type"""
+        # Fallback CAGR estimation
+        cagr_map = {
+            'oncology': 8.0,
+            'immunology': 6.0,
+            'rare disease': 12.0,
+            'infectious': 4.0,
+            'metabolic': 3.0,
+            'neurological': 5.0,
+            'cardiovascular': 2.5,
+        }
+        
+        indication_lower = indication.lower()
+        for key, cagr in cagr_map.items():
+            if key in indication_lower:
+                return cagr
+        
+        # Default: 5% CAGR
+        return 5.0
     
     def _identify_gtm_risks(self, snapshot: MarketSnapshot) -> List[str]:
         """Identify go-to-market risks"""
@@ -1180,8 +1274,8 @@ class MarketAgent:
         if len(restricted_payers) > 1:
             risks.append(f"REIMBURSEMENT RISK: {len(restricted_payers)} major payers have coverage restrictions")
         
-        # Market size risk
-        if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd < 500:
+        # Market size risk (CRITICAL FIX: check tam_usd exists)
+        if snapshot.tam_estimate and snapshot.tam_estimate.tam_usd and snapshot.tam_estimate.tam_usd < 500:
             risks.append("MARKET SIZE RISK: TAM <$500M limits blockbuster potential")
         
         # Timing risk
@@ -1191,6 +1285,70 @@ class MarketAgent:
                 risks.append("TIMING RISK: Delayed launch window provides competitors advantage")
         
         return risks
+    
+    def _determine_opportunity_label(self, snapshot: MarketSnapshot, failed_trials: List[Dict] = None) -> Optional[str]:
+        """
+        Determine market opportunity label based on Master Plan Priority #4:
+        - WHITESPACE: unmet_need > 0.7 AND competitors < 3
+        - BIOSIMILAR_WINDOW: patent expiry <= 2 years
+        - RESCUE_REPURPOSING: failed trials exist for this drug+indication
+        - PEDIATRIC_GAP: pediatric prevalence AND no pediatric trials
+        """
+        if failed_trials is None:
+            failed_trials = []
+        
+        # Check for RESCUE_REPURPOSING (highest priority - actual drug exists)
+        if len(failed_trials) > 0:
+            logger.info(f"RESCUE_REPURPOSING opportunity: {len(failed_trials)} failed trials for {snapshot.drug_name}")
+            return "RESCUE_REPURPOSING"
+        
+        # Check for BIOSIMILAR_WINDOW (patent cliff approaching for competitors)
+        biosimilar_window = False
+        if snapshot.competitors:
+            from datetime import datetime, timedelta
+            now = datetime.now()
+            two_years_ahead = now + timedelta(days=730)
+            
+            for competitor in snapshot.competitors:
+                if competitor.patent_expiry_date:
+                    try:
+                        expiry_date = datetime.fromisoformat(competitor.patent_expiry_date.replace('Z', '+00:00'))
+                        if now <= expiry_date <= two_years_ahead:
+                            logger.info(f"BIOSIMILAR_WINDOW opportunity: {competitor.drug_name} patent expires {competitor.patent_expiry_date}")
+                            biosimilar_window = True
+                            break
+                    except (ValueError, AttributeError):
+                        pass
+        
+        if biosimilar_window:
+            return "BIOSIMILAR_WINDOW"
+        
+        # Check for WHITESPACE (low competition + high unmet need)
+        num_competitors = len(snapshot.competitors)
+        unmet_need = snapshot.unmet_need_score
+        
+        if unmet_need > 0.7 and num_competitors < 3:
+            logger.info(f"WHITESPACE opportunity: unmet_need={unmet_need:.2f}, competitors={num_competitors}")
+            return "WHITESPACE"
+        
+        # Check for PEDIATRIC_GAP (would need pediatric trial data - placeholder)
+        # In production: check if indication has pediatric prevalence AND no pediatric trials exist
+        # For now, this is a heuristic based on indication keywords
+        pediatric_keywords = ["pediatric", "children", "infant", "adolescent", "juvenile"]
+        if any(keyword in snapshot.indication.lower() for keyword in pediatric_keywords):
+            # Check if any competitors have pediatric approvals (in production: query FDA pediatric database)
+            has_pediatric_coverage = False
+            for competitor in snapshot.competitors:
+                if any(keyword in competitor.indication.lower() for keyword in pediatric_keywords):
+                    has_pediatric_coverage = True
+                    break
+            
+            if not has_pediatric_coverage:
+                logger.info(f"PEDIATRIC_GAP opportunity: pediatric indication with no approved competitors")
+                return "PEDIATRIC_GAP"
+        
+        # No special opportunity label
+        return None
 
 
 # ============================================================================

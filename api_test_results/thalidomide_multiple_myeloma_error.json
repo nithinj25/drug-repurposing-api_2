@@ -1,0 +1,11 @@
+{
+  "test_case": "thalidomide_multiple_myeloma",
+  "request": {
+    "drug_name": "thalidomide",
+    "indication": "multiple myeloma",
+    "include_patent": true,
+    "use_internal_data": false
+  },
+  "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=120)",
+  "timestamp": "2026-03-03T18:28:41.138746"
+}

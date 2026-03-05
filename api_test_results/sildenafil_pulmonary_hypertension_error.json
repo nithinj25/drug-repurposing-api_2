@@ -1,0 +1,11 @@
+{
+  "test_case": "sildenafil_pulmonary_hypertension",
+  "request": {
+    "drug_name": "sildenafil",
+    "indication": "pulmonary hypertension",
+    "include_patent": true,
+    "use_internal_data": false
+  },
+  "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=120)",
+  "timestamp": "2026-03-03T15:32:21.644740"
+}

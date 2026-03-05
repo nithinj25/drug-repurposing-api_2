@@ -1,0 +1,8 @@
+{
+  "endpoint": "/health",
+  "status_code": 200,
+  "response": {
+    "status": "healthy",
+    "message": "Drug Repurposing Assistant API is running"
+  }
+}

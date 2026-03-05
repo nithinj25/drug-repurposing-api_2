@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 
 class DrugRepurposingRequest(BaseModel):
-    """Request model for drug repurposing query"""
+    """Request model for drug repurposing query (legacy - drug + indication input)"""
     drug_name: str = Field(..., description="Name of the drug to analyze")
     indication: str = Field(..., description="Target indication/disease for repurposing")
     drug_synonyms: Optional[List[str]] = Field(
@@ -58,6 +58,28 @@ class DrugRepurposingRequest(BaseModel):
                 "indication_synonyms": ["heart disease", "CVD"],
                 "include_patent": True,
                 "use_internal_data": False
+            }
+        }
+
+
+class DrugOnlyRequest(BaseModel):
+    """NEW: Request model for drug-only API with automatic disease discovery"""
+    drug_name: str = Field(..., description="Name of the drug to analyze")
+    population: Optional[str] = Field(
+        default="general_adult",
+        description="Target population for safety assessment (general_adult, terminal_illness, elderly, etc.)"
+    )
+    include_patent: Optional[bool] = Field(
+        default=True,
+        description="Whether to include patent analysis"
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "drug_name": "aspirin",
+                "population": "general_adult",
+                "include_patent": True
             }
         }
 
@@ -169,6 +191,77 @@ async def analyze_drug_repurposing(request: DrugRepurposingRequest):
         raise HTTPException(
             status_code=500,
             detail=f"Error processing drug repurposing request: {str(e)}"
+        )
+
+
+@app.post("/discover", response_model=Dict[str, Any])
+async def discover_indications(request: DrugOnlyRequest):
+    """
+    NEW ENDPOINT: Analyze a drug with automatic disease discovery (drug-only input).
+    
+    This endpoint implements the 2-phase pipeline:
+    
+    Phase 1 - DISCOVERY:
+      1. DrugProfilerAgent: Get drug profile from ChEMBL
+      2. IndicationDiscoveryAgent: Find disease candidates via target overlap
+      3. Return top 5 candidates ranked by mechanistic_score
+    
+    Phase 2 - EVALUATION (for each candidate):
+      1. MolecularAgent (Stage 1 gate: overlap < 0.15 → REJECT)
+      2. PatentAgent (Stage 2 gate: blocking patent → BLOCK)
+      3. LiteratureAgent
+      4. SafetyAgent (Stage 3 gate: hard_stop → ESCALATE but continue)
+      5. ClinicalAgent
+      6. MarketAgent
+      7. RegulatoryAgent
+      8. EXIMAgent
+      9. BiomarkerAgent
+     10. ReasoningAgent → Assign tier
+    
+    Args:
+        request: DrugOnlyRequest with drug_name (no indication required)
+    
+    Returns:
+        {
+            'drug_name': str,
+            'chembl_id': str,
+            'drug_profile': {...},
+            'discovery_result': {...},
+            'candidates': [
+                {
+                    'indication': str,
+                    'tier': str,
+                    'mechanistic_score': float,
+                    'gate_results': {...},
+                    'agent_results': {...}
+                }
+            ]
+        }
+    """
+    try:
+        logger.info(f"NEW API: Processing drug-only request for {request.drug_name}")
+        
+        # Call the new 2-phase pipeline method
+        result = master_agent.discover_and_evaluate(
+            drug_name=request.drug_name,
+            options={
+                "population": request.population,
+                "include_patent": request.include_patent
+            }
+        )
+        
+        logger.info(f"Drug discovery complete for {request.drug_name}: {len(result.get('candidates', []))} candidates evaluated")
+        
+        return {
+            "success": True,
+            "data": result
+        }
+    
+    except Exception as e:
+        logger.error(f"Error processing drug discovery request: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing drug discovery request: {str(e)}"
         )
 
 

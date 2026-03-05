@@ -1,0 +1,66 @@
+﻿{
+    "success":  true,
+    "job_id":  "4d3aac45-d4c7-4efc-9f5f-106fbde42066",
+    "data":  {
+                 "job_id":  "4d3aac45-d4c7-4efc-9f5f-106fbde42066",
+                 "drug_name":  "sildenafil",
+                 "indication":  "erectile dysfunction",
+                 "status":  "completed",
+                 "created_at":  "2026-03-03T19:34:49.322635+00:00",
+                 "query":  {
+                               "drug_name":  "sildenafil",
+                               "indication":  "erectile dysfunction",
+                               "drug_synonyms":  [
+                                                     "1-((3-(4,7-dihydro-1-methyl-7-oxo-3-propyl-1h-pyrazolo(4,3-d)pyrimidin-5-yl)-4-ethoxyphenyl)sulfonyl)-4-methylpiperazine",
+                                                     "sildenafilo"
+                                                 ],
+                               "indication_synonyms":  [
+
+                                                       ],
+                               "options":  {
+                                               "include_patent":  true,
+                                               "use_internal_data":  false
+                                           }
+                           },
+                 "task_summary":  {
+                                      "total":  0,
+                                      "completed":  0,
+                                      "failed":  0,
+                                      "pending":  0
+                                  },
+                 "tasks":  {
+
+                           },
+                 "reasoning_result":  {
+                                          "hypotheses":  [
+                                                             {
+                                                                 "hypothesis_id":  "baseline_sildenafil_erectile dysfunction_1772566489.322635",
+                                                                 "drug_name":  "sildenafil",
+                                                                 "indication":  "erectile dysfunction",
+                                                                 "composite_score":  0.95,
+                                                                 "decision":  "baseline_approved",
+                                                                 "confidence":  0.99,
+                                                                 "explanation":  "â\u0085 BASELINE VALIDATION: sildenafil is FDA-approved for erectile dysfunction (approved 1998). This is NOT a drug repurposing candidate - it\u0027s the approved indication. Mechanism: PDE5A inhibitor. Repurposing pipeline skipped as this serves as a positive control baseline.",
+                                                                 "dimension_scores":  [
+
+                                                                                      ],
+                                                                 "constraints":  [
+
+                                                                                 ],
+                                                                 "contradictions":  [
+
+                                                                                    ],
+                                                                 "baseline_validation":  true,
+                                                                 "approval_info":  {
+                                                                                       "approval_year":  1998,
+                                                                                       "trade_name":  "Viagra",
+                                                                                       "sponsor":  "Pfizer",
+                                                                                       "mechanism":  "PDE5A inhibitor",
+                                                                                       "baseline_case":  true
+                                                                                   }
+                                                             }
+                                                         ]
+                                      },
+                 "human_review_required":  false
+             }
+}

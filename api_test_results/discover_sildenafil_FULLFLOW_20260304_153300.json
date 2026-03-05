@@ -1,0 +1,298 @@
+﻿{
+    "success":  true,
+    "data":  {
+                 "drug_name":  "sildenafil",
+                 "chembl_id":  "CHEMBL1737",
+                 "drug_profile":  {
+                                      "chembl_id":  "CHEMBL1737",
+                                      "synonyms":  [
+                                                       "Aphrodil",
+                                                       "Sildenafil citrate",
+                                                       "Sildenafil actavis",
+                                                       "Sildenafil ratiopharm",
+                                                       "Sildenafil (as citrate)",
+                                                       "UK-92480-10",
+                                                       "Liqrev",
+                                                       "NSC-758669",
+                                                       "Vizarsin",
+                                                       "SILDENAFIL CITRATE",
+                                                       "Granpidam",
+                                                       "Nipatra",
+                                                       "Patrex",
+                                                       "Viagra",
+                                                       "Revatio",
+                                                       "NSC-744009",
+                                                       "Sildenafil teva",
+                                                       "UK-92,480-10",
+                                                       "Mysildecard"
+                                                   ],
+                                      "known_targets":  [
+                                                            {
+                                                                "target_chembl_id":  "CHEMBL1827",
+                                                                "target_name":  "PDE5A",
+                                                                "target_name_raw":  "cGMP-specific 3\u0027,5\u0027-cyclic phosphodiesterase",
+                                                                "target_gene_symbol":  "PDE5A",
+                                                                "target_type":  "SINGLE PROTEIN",
+                                                                "organism":  "Homo sapiens",
+                                                                "action_type":  "INHIBITOR",
+                                                                "mechanism_of_action":  "Phosphodiesterase 5A inhibitor"
+                                                            }
+                                                        ],
+                                      "approved_indications":  [
+                                                                   "Erectile Dysfunction",
+                                                                   "Hypertension, Pulmonary",
+                                                                   "Pulmonary Arterial Hypertension",
+                                                                   "Connective Tissue Diseases",
+                                                                   "Familial Primary Pulmonary Hypertension"
+                                                               ],
+                                      "max_phase":  "4.0",
+                                      "mechanism_of_action":  "Phosphodiesterase 5A inhibitor",
+                                      "drug_class":  "SILDENAFIL"
+                                  },
+                 "discovery_result":  {
+                                          "candidates_found":  5,
+                                          "top_candidates":  [
+                                                                 {
+                                                                     "disease_name":  "coronary artery disease",
+                                                                     "mechanistic_score":  0.674542280570286,
+                                                                     "linking_targets":  [
+                                                                                             "PDE5A"
+                                                                                         ],
+                                                                     "therapeutic_area":  "Other"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "benign prostatic hyperplasia",
+                                                                     "mechanistic_score":  0.6025165796147381,
+                                                                     "linking_targets":  [
+                                                                                             "PDE5A"
+                                                                                         ],
+                                                                     "therapeutic_area":  "Other"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "Impotence",
+                                                                     "mechanistic_score":  0.5995855071964015,
+                                                                     "linking_targets":  [
+                                                                                             "PDE5A"
+                                                                                         ],
+                                                                     "therapeutic_area":  "Other"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "pulmonary hypertension",
+                                                                     "mechanistic_score":  0.555857930930723,
+                                                                     "linking_targets":  [
+                                                                                             "PDE5A"
+                                                                                         ],
+                                                                     "therapeutic_area":  "Cardiovascular"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "stroke",
+                                                                     "mechanistic_score":  0.5547150642643698,
+                                                                     "linking_targets":  [
+                                                                                             "PDE5A"
+                                                                                         ],
+                                                                     "therapeutic_area":  "Neurology"
+                                                                 }
+                                                             ]
+                                      },
+                 "candidates":  [
+                                    {
+                                        "indication":  "coronary artery disease",
+                                        "mechanistic_score":  0.674542280570286,
+                                        "linking_targets":  [
+                                                                "PDE5A"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "sildenafil",
+                                                                                "indication":  "coronary artery disease",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "PDE5A",
+                                                                                                     "PDE6",
+                                                                                                     "PDE11A"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T10:03:16.445993+00:00",
+                                                                                "summary":  "Sildenafil shows low mechanistic plausibility for coronary artery disease (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration"
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    },
+                                    {
+                                        "indication":  "benign prostatic hyperplasia",
+                                        "mechanistic_score":  0.6025165796147381,
+                                        "linking_targets":  [
+                                                                "PDE5A"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "sildenafil",
+                                                                                "indication":  "benign prostatic hyperplasia",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "PDE5A",
+                                                                                                     "PDE6",
+                                                                                                     "PDE11A"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T10:03:18.216214+00:00",
+                                                                                "summary":  "Sildenafil shows low mechanistic plausibility for benign prostatic hyperplasia (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration"
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    },
+                                    {
+                                        "indication":  "Impotence",
+                                        "mechanistic_score":  0.5995855071964015,
+                                        "linking_targets":  [
+                                                                "PDE5A"
+                                                            ],
+                                        "tier":  "BASELINE_APPROVED",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "FDA-approved for this indication (approved 1998)",
+                                        "composite_score":  0.95,
+                                        "confidence":  0.99,
+                                        "baseline_validation":  true,
+                                        "approval_info":  {
+                                                              "approval_year":  1998,
+                                                              "trade_name":  "Viagra",
+                                                              "sponsor":  "Pfizer",
+                                                              "mechanism":  "PDE5A inhibitor",
+                                                              "baseline_case":  true
+                                                          },
+                                        "explanation":  "â\u0085 BASELINE VALIDATION: sildenafil is FDA-approved for Impotence (approved 1998). This is NOT a drug repurposing candidate - it\u0027s the approved indication. Mechanism: PDE5A inhibitor. Repurposing pipeline skipped as this serves as a positive control baseline."
+                                    },
+                                    {
+                                        "indication":  "pulmonary hypertension",
+                                        "mechanistic_score":  0.555857930930723,
+                                        "linking_targets":  [
+                                                                "PDE5A"
+                                                            ],
+                                        "tier":  "BASELINE_APPROVED",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "FDA-approved for this indication (approved 2005)",
+                                        "composite_score":  0.95,
+                                        "confidence":  0.99,
+                                        "baseline_validation":  true,
+                                        "approval_info":  {
+                                                              "approval_year":  2005,
+                                                              "trade_name":  "Revatio",
+                                                              "sponsor":  "Pfizer",
+                                                              "mechanism":  "PDE5A inhibitor",
+                                                              "baseline_case":  true
+                                                          },
+                                        "explanation":  "â\u0085 BASELINE VALIDATION: sildenafil is FDA-approved for pulmonary hypertension (approved 2005). This is NOT a drug repurposing candidate - it\u0027s the approved indication. Mechanism: PDE5A inhibitor. Repurposing pipeline skipped as this serves as a positive control baseline."
+                                    },
+                                    {
+                                        "indication":  "stroke",
+                                        "mechanistic_score":  0.5547150642643698,
+                                        "linking_targets":  [
+                                                                "PDE5A"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "sildenafil",
+                                                                                "indication":  "stroke",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "PDE5A",
+                                                                                                     "PDE6",
+                                                                                                     "PDE11A"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T10:03:19.819610+00:00",
+                                                                                "summary":  "Sildenafil shows low mechanistic plausibility for stroke (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration"
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: 0.000 \u003c 0.15 threshold. Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    }
+                                ]
+             }
+}

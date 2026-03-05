@@ -166,6 +166,11 @@ class FTOReport:
     total_patents_analyzed: int
     risk_summary: str
     recommendations: List[str] = field(default_factory=list)
+    # NEW: Stage 2 gate fields
+    hard_veto: bool = False  # True if blocking patent exists with expiry > 2 years
+    hard_veto_reason: Optional[str] = None
+    blocking_patent_expiry_date: Optional[str] = None  # Earliest expiry of blocking patents
+    gate_passed: bool = True  # False if hard_veto=True
     created_at: datetime = field(default_factory=datetime.utcnow)
     
     def to_dict(self) -> Dict:
@@ -207,53 +212,79 @@ class USPTOConnector(PatentSourceConnector):
     def search(self, drug_name: str, chemical_class: str = "", limit: int = 10) -> List[Dict]:
         """Search USPTO for drug-related patents"""
         logger.info(f"Searching USPTO for {drug_name}")
-        
-        # Mock search result (in production: call PatentsView API)
-        mock_results = [
-            {
-                "patent_number": "US10123456B2",
-                "patent_title": f"Pharmaceutical composition comprising {drug_name} for treating disease",
-                "patent_abstract": f"A pharmaceutical composition comprising {drug_name} as active ingredient for therapeutic use.",
-                "patent_date": "2023-06-15",
-                "assignee_organization": "Pharma Corporation",
-                "inventors": ["Smith, John", "Doe, Jane"],
-                "ipc_classes": ["A61K31/00", "A61P35/00"],
-                "legal_status": "granted",
-            },
-            {
-                "patent_number": "US10234567B2",
-                "patent_title": f"Method of using {drug_name} for treatment of cardiovascular disease",
-                "patent_abstract": f"A method of treating cardiovascular disease using {drug_name} in combination therapy.",
-                "patent_date": "2022-11-20",
-                "assignee_organization": "University Medical Center",
-                "inventors": ["Johnson, Michael"],
-                "ipc_classes": ["A61K31/00", "A61P9/00"],
-                "legal_status": "granted",
-            },
-        ]
-        return mock_results[:limit]
+
+        try:
+            fields = [
+                "patent_number",
+                "patent_title",
+                "patent_abstract",
+                "patent_date",
+                "patent_type",
+                "patent_kind",
+                "patent_num_claims",
+                "assignee_organization",
+                "inventor_first_name",
+                "inventor_last_name",
+                "ipc_section",
+                "ipc_class",
+                "ipc_subclass",
+            ]
+
+            query = {
+                "_or": [
+                    {"_text_phrase": {"patent_title": drug_name}},
+                    {"_text_phrase": {"patent_abstract": drug_name}},
+                ]
+            }
+
+            params = {
+                "q": json.dumps(query),
+                "f": json.dumps(fields),
+                "o": json.dumps({"per_page": max(1, min(limit, 100))}),
+            }
+
+            response = requests.get(self.base_url, params=params, timeout=30)
+            response.raise_for_status()
+            payload = response.json()
+            patents = payload.get("patents", [])
+
+            normalized = []
+            for p in patents:
+                inventors = []
+                if p.get("inventor_first_name") and p.get("inventor_last_name"):
+                    inventors.append(f"{p.get('inventor_last_name')}, {p.get('inventor_first_name')}")
+
+                ipc_classes = []
+                ipc_section = p.get("ipc_section")
+                ipc_class = p.get("ipc_class")
+                ipc_subclass = p.get("ipc_subclass")
+                if ipc_section and ipc_class and ipc_subclass:
+                    ipc_classes.append(f"{ipc_section}{ipc_class}{ipc_subclass}")
+
+                normalized.append({
+                    "patent_number": p.get("patent_number"),
+                    "patent_title": p.get("patent_title", ""),
+                    "patent_abstract": p.get("patent_abstract", ""),
+                    "patent_date": p.get("patent_date"),
+                    "assignee_organization": p.get("assignee_organization"),
+                    "inventors": inventors,
+                    "ipc_classes": ipc_classes,
+                    "legal_status": "granted",
+                })
+
+            return normalized
+        except Exception as e:
+            logger.warning(f"USPTO PatentsView search failed: {e}")
+            return []
     
     def fetch_patent_details(self, patent_id: str) -> Dict:
         """Fetch full patent with claims"""
         logger.info(f"Fetching USPTO patent {patent_id}")
-        
-        # Mock patent details with claims
+
         return {
             "patent_number": patent_id,
-            "claims": [
-                {
-                    "claim_number": 1,
-                    "claim_text": "A pharmaceutical composition comprising compound X and a pharmaceutically acceptable carrier.",
-                    "is_independent": True,
-                },
-                {
-                    "claim_number": 2,
-                    "claim_text": "The composition of claim 1, wherein the carrier is selected from lactose, starch, or cellulose.",
-                    "is_independent": False,
-                    "depends_on": [1],
-                },
-            ],
-            "description": "Detailed description of the invention...",
+            "claims": [],
+            "description": "",
             "pdf_url": f"https://patents.google.com/patent/{patent_id}/en",
         }
 
@@ -981,6 +1012,45 @@ class PatentAgent:
             fto_report = self.ingestion_pipeline.fto_analyzer.generate_fto_report(
                 patents, drug_name, indication
             )
+            
+            # 3.5: Apply Stage 2 gate logic (NEW FOR 2-PHASE PIPELINE)
+            # Check if hard_veto should be triggered
+            from datetime import datetime, timedelta
+            
+            blocking_patents_with_expiry = []
+            for patent in patents:
+                # Check if patent has blocking claims (RED)
+                has_red_claims = any(c.blocking_risk == FTOStatus.RED for c in patent.claims)
+                if has_red_claims and patent.expiry_date:
+                    try:
+                        # Parse expiry date
+                        expiry = datetime.fromisoformat(patent.expiry_date.replace('Z', '+00:00'))
+                        years_to_expiry = (expiry - datetime.now()).days / 365.25
+                        
+                        if years_to_expiry > 2:
+                            blocking_patents_with_expiry.append({
+                                'patent_id': patent.patent_id,
+                                'expiry_date': patent.expiry_date,
+                                'years_to_expiry': years_to_expiry
+                            })
+                    except:
+                        pass  # Skip if expiry date parsing fails
+            
+            if blocking_patents_with_expiry:
+                fto_report.hard_veto = True
+                fto_report.gate_passed = False
+                earliest = min(blocking_patents_with_expiry, key=lambda x: x['years_to_expiry'])
+                fto_report.blocking_patent_expiry_date = earliest['expiry_date']
+                fto_report.hard_veto_reason = (
+                    f"Active blocking patent exists for {drug_name} + {indication}. "
+                    f"Patent {earliest['patent_id']} expires in {earliest['years_to_expiry']:.1f} years "
+                    f"({earliest['expiry_date']}). "
+                    f"GATE DECISION: BLOCKED - Skip remaining agents, mark as BLOCKED_BY_PATENT."
+                )
+                logger.warning(f"❌ Stage 2 GATE FAILED: {fto_report.hard_veto_reason}")
+            else:
+                fto_report.gate_passed = True
+                logger.info(f"✅ Stage 2 GATE PASSED: No blocking patents or all expire within 2 years")
             
             # 4. Compile result
             result = {

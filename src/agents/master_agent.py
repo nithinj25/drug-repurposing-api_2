@@ -7,6 +7,7 @@ import logging
 import sys
 from pathlib import Path
 import importlib
+import csv
 
 # Ensure project root is on path for direct script execution
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -15,6 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 # Local orchestrated reasoning
 from src.agents.reasoning_agent import ReasoningAgent
+from src.utils.approved_indications import get_detector
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,6 +43,42 @@ class EvidenceDimension(str, Enum):
     MOLECULAR = "molecular"
     MARKET = "market"
     INTERNAL = "internal"
+
+
+class ConfidenceTier(str, Enum):
+    """Confidence tiers for sequential gating pipeline"""
+    TIER_1_CONFIRMED = "tier_1_confirmed_plausible"  # High overlap + Tier A/B lit + clean safety + trial data
+    TIER_2_MECHANISTIC = "tier_2_mechanistically_supported"  # Good overlap + any lit + acceptable safety
+    TIER_3_SPECULATIVE = "tier_3_speculative"  # Literature only, low mechanistic score
+    ESCALATE_HUMAN = "escalate_human_review"  # Black-box warning, contradictions, pediatric concerns
+
+
+class GateStage(str, Enum):
+    """Sequential pipeline stages"""
+    STAGE_1_MECHANISTIC = "stage_1_mechanistic"
+    STAGE_2_LITERATURE = "stage_2_literature"
+    STAGE_3_SAFETY = "stage_3_safety"
+    STAGE_4_CLINICAL = "stage_4_clinical"
+    STAGE_5_CONFIDENCE = "stage_5_confidence"
+
+
+@dataclass
+class GatingResult:
+    """Result from sequential gating pipeline"""
+    success: bool
+    stage: GateStage
+    confidence_tier: Optional[ConfidenceTier] = None
+    rejection_reason: Optional[str] = None
+    escalation_reason: Optional[str] = None
+    mechanistic_score: Optional[float] = None
+    overlapping_targets: List[str] = field(default_factory=list)
+    literature_tier: Optional[str] = None
+    safety_transfer_score: Optional[float] = None
+    clinical_data_available: bool = False
+    flags: List[str] = field(default_factory=list)
+    
+    def to_dict(self) -> Dict:
+        return asdict(self)
 
 
 @dataclass
@@ -118,7 +156,9 @@ class QueryNormalizer:
     """Resolves drug synonyms and canonicalizes indication text"""
     
     def __init__(self):
-        # In production, load from DrugBank/ChEMBL
+        self.drugbank_alias_to_common: Dict[str, str] = {}
+
+        # Lightweight defaults (used if DrugBank row not found)
         self.drug_synonyms_map = {
             "aspirin": ["acetylsalicylic acid", "asa", "bayer"],
             "metformin": ["glucophage", "fortamet"],
@@ -129,10 +169,63 @@ class QueryNormalizer:
             "hypertension": ["high blood pressure", "htn", "hypertensive disease"],
             "inflammation": ["inflammatory condition", "inflamm"],
         }
+
+        self._load_drugbank_vocabulary()
+
+    def _load_drugbank_vocabulary(self):
+        """Load DrugBank vocabulary CSV and build alias/canonical maps."""
+        csv_path = PROJECT_ROOT / "data" / "drugbank_vocabulary.csv"
+
+        if not csv_path.exists():
+            logger.warning(f"DrugBank vocabulary file not found at {csv_path}")
+            return
+
+        loaded_rows = 0
+
+        try:
+            with open(csv_path, "r", encoding="utf-8") as file:
+                reader = csv.DictReader(file)
+
+                for row in reader:
+                    common_name = (row.get("Common name") or "").strip().lower()
+                    synonyms_raw = (row.get("Synonyms") or "").strip()
+
+                    if not common_name:
+                        continue
+
+                    aliases = {common_name}
+
+                    if synonyms_raw:
+                        for synonym in synonyms_raw.split("|"):
+                            synonym_clean = synonym.strip().lower()
+                            if synonym_clean:
+                                aliases.add(synonym_clean)
+
+                    # Build alias -> canonical lookup
+                    for alias in aliases:
+                        self.drugbank_alias_to_common[alias] = common_name
+
+                    # Merge into canonical -> synonyms map
+                    existing = set(self.drug_synonyms_map.get(common_name, []))
+                    existing_lower = {syn.lower() for syn in existing}
+                    for alias in aliases:
+                        if alias != common_name and alias not in existing_lower:
+                            existing.add(alias)
+
+                    self.drug_synonyms_map[common_name] = sorted(existing)
+                    loaded_rows += 1
+
+            logger.info(
+                f"Loaded DrugBank vocabulary: {loaded_rows} rows, "
+                f"{len(self.drugbank_alias_to_common)} aliases"
+            )
+        except Exception as e:
+            logger.warning(f"Failed to load DrugBank vocabulary: {e}")
     
     def normalize_drug(self, drug_name: str) -> str:
         """Return canonical drug name"""
-        return drug_name.lower().strip()
+        normalized = drug_name.lower().strip()
+        return self.drugbank_alias_to_common.get(normalized, normalized)
     
     def normalize_indication(self, indication: str) -> str:
         """Return canonical indication text"""
@@ -141,7 +234,10 @@ class QueryNormalizer:
     def expand_synonyms(self, drug_name: str) -> List[str]:
         """Return list of known synonyms"""
         canonical = self.normalize_drug(drug_name)
-        return self.drug_synonyms_map.get(canonical, [canonical])
+        synonyms = self.drug_synonyms_map.get(canonical)
+        if synonyms:
+            return synonyms
+        return [canonical]
 
 
 # ============================================================================
@@ -257,6 +353,7 @@ class MasterAgent:
         self.job_store: Dict[str, JobMetadata] = {}
         self.task_results: Dict[str, Any] = {}
         self.reasoning_agent = ReasoningAgent()
+        self.approved_detector = get_detector()  # Detect FDA-approved drug-indication pairs
         # Agent registry: module path -> class name
         self.agent_registry: Dict[str, Dict[str, str]] = {
             "clinical_agent": {"module": "src.agents.clinical_agent", "class": "ClinicalTrialsAgent"},
@@ -284,6 +381,62 @@ class MasterAgent:
         normalized_drug = self.normalizer.normalize_drug(drug_name)
         normalized_indication = self.normalizer.normalize_indication(indication)
         drug_synonyms = self.normalizer.expand_synonyms(drug_name)
+        
+        # ===== CRITICAL FIX (Priority 2): Check if this is an FDA-approved baseline case =====
+        # If sildenafil-for-ED, metformin-for-diabetes, etc. → skip pipeline, return baseline validation
+        if self.approved_detector.is_approved(drug_name, indication):
+            approval_info = self.approved_detector.get_approval_info(drug_name, indication)
+            logger.info(f"\n✅ ✅ ✅ BASELINE VALIDATION CASE DETECTED ✅ ✅ ✅")
+            logger.info(f"   Drug: {drug_name}")
+            logger.info(f"   Indication: {indication}")
+            logger.info(f"   FDA Approval: {approval_info.get('approval_year', 'N/A')}")
+            logger.info(f"   Mechanism: {approval_info.get('mechanism', 'N/A')}")
+            logger.info(f"   → Skipping full repurposing pipeline (this is not a repurposing candidate)")
+            logger.info(f"   → Returning BASELINE_APPROVED response with high confidence\n")
+            
+            # Create a pseudo-job that represents baseline approval
+            job_id = str(uuid.uuid4())
+            baseline_hypothesis = {
+                'hypothesis_id': f"baseline_{drug_name}_{indication}_{datetime.now(UTC).timestamp()}",
+                'drug_name': drug_name,
+                'indication': indication,
+                'composite_score': 0.95,
+                'decision': 'baseline_approved',
+                'confidence': 0.99,
+                'explanation': (
+                    f"✅ BASELINE VALIDATION: {drug_name} is FDA-approved for {indication} "
+                    f"(approved {approval_info.get('approval_year', 'N/A')}). "
+                    f"This is NOT a drug repurposing candidate - it's the approved indication. "
+                    f"Mechanism: {approval_info.get('mechanism', 'N/A')}. "
+                    f"Repurposing pipeline skipped as this serves as a positive control baseline."
+                ),
+                'dimension_scores': [],
+                'constraints': [],
+                'contradictions': [],
+                'baseline_validation': True,
+                'approval_info': approval_info
+            }
+            
+            # Store minimal job info for status endpoint compatibility
+            job = JobMetadata(
+                job_id=job_id,
+                created_at=datetime.now(UTC),
+                user_id=self.user_id,
+                query=DrugIndicationQuery(
+                    drug_name=normalized_drug,
+                    indication=normalized_indication,
+                    drug_synonyms=drug_synonyms,
+                    options=options
+                ),
+            )
+            job.status = TaskStatus.COMPLETED
+            job.reasoning_result = {'hypotheses': [baseline_hypothesis]}
+            job.tasks = {}
+            self.job_store[job_id] = job
+            
+            logger.info(f"Baseline job {job_id} created for {drug_name} → {indication}")
+            return job_id
+        # ===== End baseline case check =====
         
         query = DrugIndicationQuery(
             drug_name=normalized_drug,
@@ -397,6 +550,349 @@ class MasterAgent:
         return self._trigger_synthesis(job_id)
     
     # ========================================================================
+    # NEW: 2-Phase Pipeline for Drug-Only API (Master Plan Phase A)
+    # ========================================================================
+
+    def discover_and_evaluate(self, drug_name: str, options: Optional[Dict] = None) -> Dict[str, Any]:
+        """
+        NEW ENTRY POINT for drug-only API with 2-phase pipeline:
+        
+        Phase 1 - DISCOVERY:
+          1. DrugProfilerAgent: Get drug profile from ChEMBL (targets, indications, mechanism)
+          2. IndicationDiscoveryAgent: Query Open Targets for disease candidates via target overlap
+          3. Return top 5 disease candidates ranked by mechanistic_score
+        
+        Phase 2 - EVALUATION (for each candidate):
+          1. MolecularAgent (Stage 1 gate: overlap < 0.15 → REJECT)
+          2. PatentAgent (Stage 2 gate: blocking patent → BLOCK)
+          3. LiteratureAgent
+          4. SafetyAgent (Stage 3 gate: hard_stop → ESCALATE but continue)
+          5. ClinicalAgent
+          6. MarketAgent
+          7. RegulatoryAgent
+          8. EXIMAgent
+          9. BiomarkerAgent
+         10. ReasoningAgent → Assign tier (Tier 1/2/3/Escalate/Insufficient)
+        
+        Returns:
+            {
+                'drug_name': str,
+                'chembl_id': str,
+                'discovery_result': {...},  # Phase 1 output
+                'candidates': [  # Phase 2 output for each indication
+                    {
+                        'indication': str,
+                        'mechanistic_score': float,
+                        'tier': str,
+                        'gate_results': {...},
+                        'agent_results': {...}
+                    }
+                ]
+            }
+        """
+        if options is None:
+            options = {}
+
+        logger.info(f"\n{'='*80}")
+        logger.info(f"🚀 2-PHASE PIPELINE START: {drug_name}")
+        logger.info(f"{'='*80}\n")
+
+        # ========== PHASE 1: DISCOVERY ==========
+        logger.info(f"📍 PHASE 1: DISEASE DISCOVERY\n")
+
+        # Step 1: DrugProfiler - Get drug profile from ChEMBL
+        logger.info("Step 1/2: DrugProfilerAgent querying ChEMBL...")
+        try:
+            drug_profiler_module = importlib.import_module("src.agents.drug_profiler_agent")
+            DrugProfilerAgent = getattr(drug_profiler_module, "DrugProfilerAgent")
+            drug_profiler = DrugProfilerAgent()
+            drug_profile = drug_profiler.run(drug_name)
+            logger.info(f"✅ DrugProfiler complete: {drug_profile.chembl_id}, {len(drug_profile.known_targets)} targets")
+        except Exception as e:
+            logger.error(f"❌ DrugProfiler failed: {e}")
+            return {'error': f'DrugProfiler failed: {e}', 'drug_name': drug_name}
+
+        # Step 2: IndicationDiscovery - Find disease candidates via Open Targets
+        logger.info("Step 2/2: IndicationDiscoveryAgent querying Open Targets...")
+        try:
+            indication_discovery_module = importlib.import_module("src.agents.indication_discovery_agent")
+            IndicationDiscoveryAgent = getattr(indication_discovery_module, "IndicationDiscoveryAgent")
+            discovery_agent = IndicationDiscoveryAgent()
+            if hasattr(drug_profile, "to_dict"):
+                drug_profile_payload = drug_profile.to_dict()
+            elif hasattr(drug_profile, "__dict__"):
+                drug_profile_payload = dict(drug_profile.__dict__)
+            else:
+                drug_profile_payload = drug_profile
+
+            discovery_result = discovery_agent.run(drug_profile_payload)
+            candidates = discovery_result.candidates
+            logger.info(f"✅ IndicationDiscovery complete: {len(candidates)} candidates found")
+        except Exception as e:
+            logger.error(f"❌ IndicationDiscovery failed: {e}")
+            return {'error': f'IndicationDiscovery failed: {e}', 'drug_name': drug_name, 'chembl_id': drug_profile.chembl_id}
+
+        if len(candidates) == 0:
+            logger.warning("⚠️  No disease candidates found for drug")
+            return {
+                'drug_name': drug_name,
+                'chembl_id': drug_profile.chembl_id,
+                'discovery_result': {'candidates': [], 'message': 'No disease candidates found'},
+                'candidates': []
+            }
+
+        logger.info(f"\n📊 Phase 1 Complete: Top {len(candidates)} candidates:")
+        for i, candidate in enumerate(candidates[:5], 1):
+            logger.info(f"  {i}. {candidate.disease_name} (score: {candidate.mechanistic_score:.3f})")
+
+        # ========== HACKATHON OPTIMIZATION: Only evaluate TOP 3 candidates ==========
+        MAX_CANDIDATES_TO_EVALUATE = 3
+        candidates_to_evaluate = candidates[:MAX_CANDIDATES_TO_EVALUATE]
+        logger.info(f"\n⚡ PERFORMANCE OPTIMIZATION: Evaluating only TOP {len(candidates_to_evaluate)} candidates (out of {len(candidates)} discovered)")
+        logger.info(f"   This reduces processing time from ~{len(candidates)*2}min to ~{len(candidates_to_evaluate)*1.4}min\n")
+
+        # ========== PHASE 2: SEQUENTIAL EVALUATION ==========
+        logger.info(f"\n📍 PHASE 2: 10-STAGE EVALUATION (with gates at stages 1, 2, 3)\n")
+
+        evaluated_candidates = []
+
+        for idx, candidate in enumerate(candidates_to_evaluate, 1):
+            indication = candidate.disease_name
+            logger.info(f"\n{'─'*80}")
+            logger.info(f"🔬 Candidate {idx}/{len(candidates)}: {drug_name} → {indication}")
+            logger.info(f"   Mechanistic Score: {candidate.mechanistic_score:.3f}")
+            logger.info(f"{'─'*80}\n")
+
+            candidate_result = {
+                'indication': indication,
+                'mechanistic_score': candidate.mechanistic_score,
+                'linking_targets': candidate.linking_targets,
+                'tier': None,
+                'gate_results': {},
+                'agent_results': {},
+                'early_exit': False,
+                'exit_reason': None
+            }
+
+            # ========== CRITICAL FIX (Priority 2): Check if this is an FDA-approved baseline case ==========
+            # If sildenafil-for-ED, metformin-for-diabetes, etc. → skip repurposing pipeline, return baseline validation
+            if self.approved_detector.is_approved(drug_name, indication):
+                approval_info = self.approved_detector.get_approval_info(drug_name, indication)
+                logger.info(f"✅ ✅ ✅ BASELINE VALIDATION CASE DETECTED ✅ ✅ ✅")
+                logger.info(f"   Drug: {drug_name}")
+                logger.info(f"   Indication: {indication}")
+                logger.info(f"   FDA Approval: {approval_info.get('approval_year', 'N/A')}")
+                logger.info(f"   Mechanism: {approval_info.get('mechanism', 'N/A')}")
+                logger.info(f"   → Skipping repurposing pipeline (this is not a repurposing candidate)")
+                logger.info(f"   → Assigning BASELINE_APPROVED tier with high confidence\n")
+                
+                candidate_result['tier'] = 'BASELINE_APPROVED'
+                candidate_result['composite_score'] = 0.95  # High score for approved baseline
+                candidate_result['confidence'] = 0.99
+                candidate_result['early_exit'] = True
+                candidate_result['exit_reason'] = f"FDA-approved for this indication (approved {approval_info.get('approval_year', 'N/A')})"
+                candidate_result['baseline_validation'] = True
+                candidate_result['approval_info'] = approval_info
+                candidate_result['explanation'] = (
+                    f"✅ BASELINE VALIDATION: {drug_name} is FDA-approved for {indication} "
+                    f"(approved {approval_info.get('approval_year', 'N/A')}). "
+                    f"This is NOT a drug repurposing candidate - it's the approved indication. "
+                    f"Mechanism: {approval_info.get('mechanism', 'N/A')}. "
+                    f"Repurposing pipeline skipped as this serves as a positive control baseline."
+                )
+                
+                evaluated_candidates.append(candidate_result)
+                logger.info(f"✅ Baseline validation recorded for {indication}\n")
+                continue
+            # ========== End baseline case check ==========
+
+            try:
+                # === Stage 1: Molecular (GATE 1) ===
+                logger.info("Stage 1/10: MolecularAgent (GATE 1: overlap < 0.15 → REJECT)...")
+                molecular_module = importlib.import_module("src.agents.molecular_agent")
+                MolecularAgent = getattr(molecular_module, "MolecularAgent")
+                molecular_agent = MolecularAgent()
+                molecular_result = molecular_agent.run(drug_name, indication)
+                candidate_result['agent_results']['molecular'] = molecular_result
+
+                if not molecular_result.get('gate_passed', True):
+                    logger.warning(f"❌ STAGE 1 GATE FAILED: {molecular_result.get('gate_rejection_reason')}")
+                    candidate_result['early_exit'] = True
+                    candidate_result['exit_reason'] = molecular_result.get('gate_rejection_reason')
+                    candidate_result['tier'] = 'REJECT'
+                    evaluated_candidates.append(candidate_result)
+                    logger.info(f"⏭️  Skipping remaining stages for {indication}\n")
+                    continue
+
+                logger.info(f"✅ Stage 1 passed: overlap={molecular_result.get('overlap_score', 0):.3f}")
+
+                # === Stage 2: Patent (GATE 2) ===
+                logger.info("Stage 2/10: PatentAgent (GATE 2: blocking patent → BLOCK)...")
+                patent_module = importlib.import_module("src.agents.patent_agent")
+                PatentAgent = getattr(patent_module, "PatentAgent")
+                patent_agent = PatentAgent()
+                patent_result = patent_agent.run(drug_name, indication)
+                candidate_result['agent_results']['patent'] = patent_result
+
+                if patent_result.get('hard_veto', False):
+                    logger.warning(f"❌ STAGE 2 GATE FAILED: {patent_result.get('hard_veto_reason')}")
+                    candidate_result['early_exit'] = True
+                    candidate_result['exit_reason'] = patent_result.get('hard_veto_reason')
+                    candidate_result['tier'] = 'BLOCKED_BY_PATENT'
+                    evaluated_candidates.append(candidate_result)
+                    logger.info(f"⏭️  Skipping remaining stages for {indication}\n")
+                    continue
+
+                logger.info("✅ Stage 2 passed: no blocking patents")
+
+                # === Stage 3: Literature ===
+                logger.info("Stage 3/10: LiteratureAgent...")
+                literature_module = importlib.import_module("src.agents.literature_agent")
+                LiteratureAgent = getattr(literature_module, "LiteratureAgent")
+                literature_agent = LiteratureAgent()
+                literature_result = literature_agent.run(drug_name, indication)
+                candidate_result['agent_results']['literature'] = literature_result
+                logger.info(f"✅ Stage 3 complete: {literature_result.get('paper_count', 0)} papers, grade {literature_result.get('grade', 'E')}")
+
+                # === Stage 4: Safety (GATE 3 - soft gate) ===
+                logger.info("Stage 4/10: SafetyAgent (GATE 3: hard_stop → ESCALATE but continue)...")
+                safety_module = importlib.import_module("src.agents.safety_agent")
+                SafetyAgent = getattr(safety_module, "SafetyAgent")
+                safety_agent = SafetyAgent()
+                population = options.get('population', 'general_adult')
+                safety_result = safety_agent.run(drug_name, indication, population=population)
+                candidate_result['agent_results']['safety'] = safety_result.__dict__ if hasattr(safety_result, '__dict__') else safety_result
+
+                if candidate_result['agent_results']['safety'].get('hard_stop', False):
+                    logger.warning(f"⚠️  STAGE 3 SOFT GATE: {candidate_result['agent_results']['safety'].get('hard_stop_reason')}")
+                    logger.warning("   Continuing evaluation but will ESCALATE final decision")
+                else:
+                    logger.info(f"✅ Stage 4 passed: safety_score={candidate_result['agent_results']['safety'].get('safety_score', 0):.3f}")
+
+                # === Stage 5: Clinical ===
+                logger.info("Stage 5/10: ClinicalAgent...")
+                clinical_module = importlib.import_module("src.agents.clinical_agent")
+                ClinicalTrialsAgent = getattr(clinical_module, "ClinicalTrialsAgent")
+                clinical_agent = ClinicalTrialsAgent()
+                clinical_result = clinical_agent.run(drug_name, indication)
+                candidate_result['agent_results']['clinical'] = clinical_result
+                logger.info(f"✅ Stage 5 complete: {clinical_result.get('trial_count', 0)} trials")
+
+                # === Stage 6: Market ===
+                logger.info("Stage 6/10: MarketAgent...")
+                market_module = importlib.import_module("src.agents.market_agent")
+                MarketAgent = getattr(market_module, "MarketAgent")
+                market_agent = MarketAgent()
+                market_result = market_agent.run(drug_name, indication, options={'failed_trials': clinical_result.get('failed_trials', [])})
+                candidate_result['agent_results']['market'] = market_result
+                
+                # CRITICAL FIX: Check tam_estimate exists before logging
+                tam_value = 0
+                if market_result.get('tam_estimate') and isinstance(market_result['tam_estimate'], dict):
+                    tam_value = market_result['tam_estimate'].get('tam_usd', 0)
+                logger.info(f"✅ Stage 6 complete: TAM=${tam_value:.0f}M, label={market_result.get('opportunity_label', 'None')}")
+
+                # === Stage 7: Regulatory ===
+                logger.info("Stage 7/10: RegulatoryAgent...")
+                regulatory_module = importlib.import_module("src.agents.regulatory_agent")
+                RegulatoryAgent = getattr(regulatory_module, "RegulatoryAgent")
+                regulatory_agent = RegulatoryAgent()
+                regulatory_result = regulatory_agent.run(drug_name, indication, drug_profile)
+                candidate_result['agent_results']['regulatory'] = regulatory_result.__dict__ if hasattr(regulatory_result, '__dict__') else regulatory_result
+                logger.info(f"✅ Stage 7 complete: pathway={candidate_result['agent_results']['regulatory'].get('recommended_pathway', 'Unknown')}")
+
+                # === Stage 8: EXIM ===
+                logger.info("Stage 8/10: EXIMAgent...")
+                exim_module = importlib.import_module("src.agents.exim_agent")
+                EXIMAgent = getattr(exim_module, "EXIMAgent")
+                exim_agent = EXIMAgent()
+                exim_result = exim_agent.run(drug_name, indication, drug_profile)
+                candidate_result['agent_results']['exim'] = exim_result.__dict__ if hasattr(exim_result, '__dict__') else exim_result
+                logger.info(f"✅ Stage 8 complete: COGS=${candidate_result['agent_results']['exim'].get('estimated_cogs_per_unit', 0):.2f}")
+
+                # === Stage 9: Biomarker ===
+                logger.info("Stage 9/10: BiomarkerAgent...")
+                biomarker_module = importlib.import_module("src.agents.biomarker_agent")
+                BiomarkerAgent = getattr(biomarker_module, "BiomarkerAgent")
+                biomarker_agent = BiomarkerAgent()
+                biomarker_result = biomarker_agent.run(drug_name, indication, drug_profile.known_targets)
+                candidate_result['agent_results']['biomarker'] = biomarker_result.__dict__ if hasattr(biomarker_result, '__dict__') else biomarker_result
+                logger.info(f"✅ Stage 9 complete: {len(candidate_result['agent_results']['biomarker'].get('pharmacogenomic_variants', []))} variants")
+
+                # === Stage 10: Reasoning (Tier Assignment) ===
+                logger.info("Stage 10/10: ReasoningAgent (tiered decision logic)...")
+                reasoning_input = [{
+                    'drug': drug_name,
+                    'indication': indication,
+                    'agent_results': candidate_result['agent_results']
+                }]
+                reasoning_result = self.reasoning_agent.run(reasoning_input)
+
+                if len(reasoning_result.hypotheses) > 0:
+                    hypothesis = reasoning_result.hypotheses[0]
+                    candidate_result['tier'] = hypothesis.decision.value
+                    candidate_result['composite_score'] = hypothesis.composite_score
+                    candidate_result['confidence'] = hypothesis.confidence
+                    candidate_result['explanation'] = hypothesis.explanation
+                    logger.info(f"✅ Stage 10 complete: TIER={candidate_result['tier']}, score={hypothesis.composite_score:.3f}")
+                else:
+                    candidate_result['tier'] = 'INSUFFICIENT_EVIDENCE'
+                    logger.warning("⚠️  Stage 10: No hypothesis generated")
+
+                evaluated_candidates.append(candidate_result)
+                logger.info(f"\n✅ Evaluation complete for {indication}\n")
+
+            except Exception as e:
+                logger.error(f"❌ Evaluation failed for {indication}: {e}")
+                candidate_result['tier'] = 'ERROR'
+                candidate_result['error'] = str(e)
+                evaluated_candidates.append(candidate_result)
+
+        # ========== FINAL RESULT ==========
+        logger.info(f"\n{'='*80}")
+        logger.info(f"🏁 2-PHASE PIPELINE COMPLETE: {drug_name}")
+        logger.info(f"   Candidates discovered: {len(candidates)}")
+        logger.info(f"   Candidates evaluated: {len(evaluated_candidates)} (Top 3 for demo speed)")
+        logger.info(f"   Baseline Approved (FDA): {sum(1 for c in evaluated_candidates if c['tier'] == 'BASELINE_APPROVED')}")
+        logger.info(f"   Tier 1 (Confirmed): {sum(1 for c in evaluated_candidates if c['tier'] == 'tier_1_confirmed')}")
+        logger.info(f"   Tier 2 (Plausible): {sum(1 for c in evaluated_candidates if c['tier'] == 'tier_2_plausible')}")
+        logger.info(f"   Tier 3 (Speculative): {sum(1 for c in evaluated_candidates if c['tier'] == 'tier_3_speculative')}")
+        logger.info(f"   Escalate (Human Review): {sum(1 for c in evaluated_candidates if c['tier'] == 'escalate_human_review')}")
+        logger.info(f"   Blocked (Patent): {sum(1 for c in evaluated_candidates if c['tier'] == 'BLOCKED_BY_PATENT')}")
+        logger.info(f"   Rejected (Gate 1): {sum(1 for c in evaluated_candidates if c['tier'] == 'REJECT')}")
+        logger.info(f"{'='*80}\n")
+
+        return {
+            'drug_name': drug_name,
+            'chembl_id': drug_profile.chembl_id,
+            'drug_profile': {
+                'chembl_id': drug_profile.chembl_id,
+                'synonyms': drug_profile.synonyms,
+                'known_targets': drug_profile.known_targets,
+                'approved_indications': drug_profile.approved_indications,
+                'max_phase': drug_profile.max_phase,
+                'mechanism_of_action': drug_profile.mechanism_of_action,
+                'drug_class': drug_profile.drug_class
+            },
+            'discovery_result': {
+                'candidates_found': len(candidates),
+                'top_candidates': [
+                    {
+                        'disease_name': c.disease_name,
+                        'mechanistic_score': c.mechanistic_score,
+                        'linking_targets': c.linking_targets,
+                        'therapeutic_area': c.therapeutic_area
+                    } for c in candidates
+                ]
+            },
+            'candidates': evaluated_candidates
+        }
+    
+    # ========================================================================
+    # End of 2-Phase Pipeline
+    # ========================================================================
+    
+    # ========================================================================
     # Internal Methods
     # ========================================================================
     
@@ -456,6 +952,249 @@ class MasterAgent:
             },
             'reasoning_result': job.reasoning_result,
         }
+
+    # ========================================================================
+    # Sequential Gating Pipeline (Master Plan Priority #1)
+    # ========================================================================
+    
+    async def repurpose_with_gating(
+        self,
+        drug_name: str,
+        indication: str,
+        patient_population: Optional[str] = None,
+        options: Optional[Dict] = None
+    ) -> GatingResult:
+        """
+        Sequential gating pipeline that replaces parallel dispatch.
+        Each stage acts as a gate - if criteria not met, pipeline stops.
+        
+        STAGE 1: Mechanistic gate (overlap_score > 0.15)
+        STAGE 2: Literature gate (mechanism-guided search)  
+        STAGE 3: Safety gate (population-specific thresholds)
+        STAGE 4: Clinical gate (dosing + failed trials)
+        STAGE 5: Confidence tier assignment
+        """
+        if options is None:
+            options = {}
+        if patient_population is None:
+            patient_population = "general_adult"
+            
+        logger.info(f"Starting sequential gating: {drug_name} → {indication} (population: {patient_population})")
+        
+        # Normalize inputs
+        normalized_drug = self.normalizer.normalize_drug(drug_name)
+        normalized_indication = self.normalizer.normalize_indication(indication)
+        
+        # ====================================================================
+        # STAGE 1: Mechanistic Gate (runs first, always)
+        # ====================================================================
+        logger.info("STAGE 1: Mechanistic analysis (target-disease overlap)")
+        
+        try:
+            mol_agent = self._load_agent("molecular_agent")
+            mol_result = mol_agent.run(
+                drug_name=normalized_drug,
+                indication=normalized_indication
+            )
+            
+            overlap_score = mol_result.get("overlap_score", 0.0)
+            overlapping_targets = mol_result.get("overlapping_targets", [])
+            gate_passed = mol_result.get("gate_passed", overlap_score >= 0.15)
+            gate_threshold_used = mol_result.get("gate_threshold_used", 0.15)
+            gate_rejection_reason = mol_result.get("gate_rejection_reason", "No mechanistic basis")
+            
+            logger.info(f"Mechanistic overlap score: {overlap_score:.3f} ({len(overlapping_targets)} targets)")
+            
+            if not gate_passed:
+                logger.warning(
+                    f"REJECTED at Stage 1: overlap_score {overlap_score:.3f} < threshold {gate_threshold_used:.3f}"
+                )
+                return GatingResult(
+                    success=False,
+                    stage=GateStage.STAGE_1_MECHANISTIC,
+                    rejection_reason=gate_rejection_reason,
+                    mechanistic_score=overlap_score,
+                    overlapping_targets=overlapping_targets
+                )
+        except Exception as e:
+            logger.exception(f"Stage 1 failed: {e}")
+            return GatingResult(
+                success=False,
+                stage=GateStage.STAGE_1_MECHANISTIC,
+                rejection_reason=f"Molecular agent error: {str(e)}"
+            )
+        
+        # ====================================================================
+        # STAGE 2: Literature Gate (mechanism-guided)
+        # ====================================================================
+        logger.info("STAGE 2: Literature search (mechanism-first queries)")
+        
+        lit_result = {}
+        try:
+            lit_agent = self._load_agent("literature_agent")
+            lit_result = lit_agent.run(
+                drug_name=normalized_drug,
+                indication=normalized_indication,
+                targets=overlapping_targets  # Pass targets from Stage 1
+            )
+            
+            max_tier = lit_result.get("max_evidence_tier", "D")
+            paper_count = lit_result.get("paper_count", 0)
+            
+            logger.info(f"Literature: {paper_count} papers (max tier: {max_tier})")
+            
+            # Flag computational-only hypotheses
+            if max_tier == "D" and paper_count < 3:
+                lit_result["flag"] = "computational_hypothesis_only"
+                logger.warning("Literature flag: computational hypothesis only (< 3 papers, all Tier D)")
+                
+        except Exception as e:
+            logger.exception(f"Stage 2 failed: {e}")
+            lit_result = {"error": str(e), "paper_count": 0, "max_evidence_tier": "D"}
+        
+        # ====================================================================
+        # STAGE 3: Safety Gate (population-specific)
+        # ====================================================================
+        logger.info(f"STAGE 3: Safety analysis (population: {patient_population})")
+        
+        safety_result = {}
+        try:
+            safety_agent = self._load_agent("safety_agent")
+            safety_result = safety_agent.run(
+                drug_name=normalized_drug,
+                indication=normalized_indication,
+                population=patient_population  # Population-specific thresholds
+            )
+            
+            hard_stop = safety_result.get("hard_stop", False)
+            safety_transfer_score = safety_result.get("safety_transfer_score", 0.0)
+            
+            logger.info(f"Safety transfer score: {safety_transfer_score:.3f} (hard_stop: {hard_stop})")
+            
+            # Hard stop conditions require human review
+            if hard_stop:
+                escalation_msg = safety_result.get("hard_stop_reason", "Safety hard stop detected")
+                logger.warning(f"ESCALATE at Stage 3: {escalation_msg}")
+                return GatingResult(
+                    success=False,
+                    stage=GateStage.STAGE_3_SAFETY,
+                    confidence_tier=ConfidenceTier.ESCALATE_HUMAN,
+                    escalation_reason=escalation_msg,
+                    mechanistic_score=overlap_score,
+                    overlapping_targets=overlapping_targets,
+                    literature_tier=lit_result.get("max_evidence_tier"),
+                    safety_transfer_score=safety_transfer_score,
+                    flags=["safety_hard_stop"]
+                )
+                
+        except Exception as e:
+            logger.exception(f"Stage 3 failed: {e}")
+            safety_result = {"error": str(e), "safety_transfer_score": 0.0}
+        
+        # ====================================================================
+        # STAGE 4: Clinical Gate (dosing + failed trials)
+        # ====================================================================
+        logger.info("STAGE 4: Clinical trial evidence extraction")
+        
+        clin_result = {}
+        try:
+            clin_agent = self._load_agent("clinical_agent")
+            clin_result = clin_agent.run(
+                drug_name=normalized_drug,
+                indication=normalized_indication
+            )
+            
+            has_trial_data = clin_result.get("trial_count", 0) > 0
+            failed_trials = clin_result.get("failed_trials", [])
+            
+            logger.info(f"Clinical: {clin_result.get('trial_count', 0)} trials ({len(failed_trials)} failures)")
+            
+        except Exception as e:
+            logger.exception(f"Stage 4 failed: {e}")
+            clin_result = {"error": str(e), "trial_count": 0, "has_trial_data": False}
+        
+        # ====================================================================
+        # STAGE 5: Confidence Tier Assignment
+        # ====================================================================
+        logger.info("STAGE 5: Assigning confidence tier")
+        
+        tier, flags = self._assign_confidence_tier(
+            overlap_score=overlap_score,
+            lit_tier=lit_result.get("max_evidence_tier", "D"),
+            paper_count=lit_result.get("paper_count", 0),
+            safety_score=safety_result.get("safety_transfer_score", 0.0),
+            has_trials=clin_result.get("trial_count", 0) > 0,
+            contradictions=lit_result.get("contradictory_papers", 0)
+        )
+        
+        logger.info(f"Final confidence tier: {tier.value}")
+        
+        return GatingResult(
+            success=True,
+            stage=GateStage.STAGE_5_CONFIDENCE,
+            confidence_tier=tier,
+            mechanistic_score=overlap_score,
+            overlapping_targets=overlapping_targets,
+            literature_tier=lit_result.get("max_evidence_tier"),
+            safety_transfer_score=safety_result.get("safety_transfer_score"),
+            clinical_data_available=clin_result.get("trial_count", 0) > 0,
+            flags=flags
+        )
+    
+    def _assign_confidence_tier(
+        self,
+        overlap_score: float,
+        lit_tier: str,
+        paper_count: int,
+        safety_score: float,
+        has_trials: bool,
+        contradictions: int
+    ) -> tuple[ConfidenceTier, List[str]]:
+        """
+        Assign confidence tier based on multi-stage evidence.
+        
+        Tier 1: overlap > 0.4 + Tier A/B lit + clean safety + trial data
+        Tier 2: overlap > 0.2 + any lit + acceptable safety
+        Tier 3: Literature only, overlap < 0.2
+        Escalate: Contradictions or other concerns
+        """
+        flags = []
+        
+        # Check for escalation conditions first
+        if contradictions >= 3:
+            flags.append("high_contradictions")
+            return (ConfidenceTier.ESCALATE_HUMAN, flags)
+        
+        # Tier 1: Confirmed Plausible
+        if (overlap_score > 0.4 and
+            lit_tier in ["A", "B"] and
+            safety_score > 0.7 and
+            has_trials):
+            flags.append("high_confidence")
+            return (ConfidenceTier.TIER_1_CONFIRMED, flags)
+        
+        # Tier 2: Mechanistically Supported
+        if overlap_score > 0.2 and paper_count > 0 and safety_score > 0.5:
+            if not has_trials:
+                flags.append("first_mover_opportunity")
+            return (ConfidenceTier.TIER_2_MECHANISTIC, flags)
+        
+        # Tier 3: Speculative
+        if overlap_score < 0.2:
+            flags.append("low_mechanistic_score")
+        if lit_tier == "D":
+            flags.append("computational_only")
+        
+        return (ConfidenceTier.TIER_3_SPECULATIVE, flags)
+    
+    def _load_agent(self, agent_name: str):
+        """Dynamically load an agent by name"""
+        if agent_name not in self.agent_registry:
+            raise ValueError(f"Unknown agent: {agent_name}")
+        meta = self.agent_registry[agent_name]
+        module = importlib.import_module(meta["module"])
+        agent_cls = getattr(module, meta["class"])
+        return agent_cls()
 
     def _execute_task(self, task: Task, query: DrugIndicationQuery) -> Dict[str, Any]:
         """Run the appropriate agent synchronously and return its result"""

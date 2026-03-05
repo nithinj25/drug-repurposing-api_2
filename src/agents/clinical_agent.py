@@ -119,6 +119,11 @@ class TrialRecord:
     enrollment: Optional[int] = None
     completion_date: Optional[str] = None
     start_date: Optional[str] = None
+    why_stopped: Optional[str] = None  # Reason for termination/withdrawal
+    why_stopped_reason: Optional[str] = None  # Detailed reason
+    dose: Optional[str] = None  # Extracted dose information
+    route: Optional[str] = None  # Administration route (oral, IV, etc.)
+    duration: Optional[str] = None  # Treatment duration
     primary_outcomes: List[Outcome] = field(default_factory=list)
     secondary_outcomes: List[Outcome] = field(default_factory=list)
     safety_signals: List[SafetySignal] = field(default_factory=list)
@@ -189,49 +194,38 @@ class ClinicalTrialsGovConnector(TrialSourceConnector):
     
     def search(self, drug_name: str, indication: str, limit: int = 10) -> List[Dict]:
         """
-        Search ClinicalTrials.gov using their API.
-        In production: use filters, pagination, etc.
+        Search ClinicalTrials.gov using API v2.
         """
         logger.info(f"Searching ClinicalTrials.gov for {drug_name} + {indication}")
-        
-        # Mock search result (in production: call API)
-        mock_results = [
-            {
-                "nctId": "NCT04567890",
-                "protocolSection": {
-                    "identificationModule": {
-                        "nctId": "NCT04567890",
-                        "title": f"A Trial of {drug_name} for {indication}",
-                        "organization": {"name": "Pharma Inc."}
-                    },
-                    "statusModule": {
-                        "status": "COMPLETED",
-                        "startDateStruct": {"date": "2020-01-01"},
-                        "completionDateStruct": {"date": "2023-06-30"}
-                    },
-                    "designModule": {
-                        "phases": ["PHASE_3"],
-                        "enrollment": {"value": 450}
-                    }
-                }
+
+        try:
+            query_term = f"{drug_name} {indication}".strip()
+            params = {
+                "query.term": query_term,
+                "pageSize": max(1, min(limit, 100)),
+                "countTotal": "true",
             }
-        ]
-        return mock_results[:limit]
+            response = requests.get(f"{self.base_url}/studies", params=params, timeout=30)
+            response.raise_for_status()
+            payload = response.json()
+            studies = payload.get("studies", [])
+            return studies[:limit]
+        except Exception as e:
+            logger.warning(f"ClinicalTrials.gov search failed: {e}")
+            return []
     
     def fetch_trial_details(self, trial_id: str) -> Dict:
         """Fetch full trial details from API"""
         logger.info(f"Fetching trial details for {trial_id}")
-        
-        # Mock fetch (in production: call API endpoint /studies/{nctId})
-        return {
-            "nctId": trial_id,
-            "protocolSection": {
-                "identificationModule": {
-                    "title": "Mock Trial Title",
-                    "organization": {"name": "Pharma Inc."}
-                }
-            }
-        }
+
+        try:
+            response = requests.get(f"{self.base_url}/studies/{trial_id}", timeout=30)
+            response.raise_for_status()
+            payload = response.json()
+            return payload.get("study", payload)
+        except Exception as e:
+            logger.warning(f"ClinicalTrials.gov details fetch failed for {trial_id}: {e}")
+            return {}
 
 
 class EUCTRConnector(TrialSourceConnector):
@@ -315,9 +309,12 @@ class TrialIngestionPipeline:
         1. Fetch from all registries in parallel
         2. Parse and normalize
         3. Extract attributes
-        4. Store and index
+        4. CRITICAL: Validate drug presence (not just indication)
+        5. Store and index
         """
         all_trials = []
+        valid_trials = []
+        filtered_count = 0
         
         # 1. Fetch from all connectors
         for registry_name, connector in self.connectors.items():
@@ -332,16 +329,61 @@ class TrialIngestionPipeline:
                     # 3. Extract drug/indication entities
                     trial_record = self.extractor.extract_and_enrich(trial_record, drug_name, indication)
                     
-                    # 4. Store
-                    self.trial_store[trial_record.trial_id] = trial_record
-                    all_trials.append(trial_record)
-                    logger.info(f"Stored trial {trial_record.trial_id}")
+                    # CRITICAL FIX #1: Validate drug name actually appears in trial
+                    if self._validate_drug_in_trial(trial_record, drug_name):
+                        # 4. Store only valid trials
+                        self.trial_store[trial_record.trial_id] = trial_record
+                        all_trials.append(trial_record)
+                        valid_trials.append(trial_record)
+                        logger.info(f"✓ Valid trial {trial_record.trial_id} - drug '{drug_name}' confirmed in trial data")
+                    else:
+                        filtered_count += 1
+                        logger.warning(f"✗ Trial {trial_record.trial_id} filtered out - drug '{drug_name}' NOT found in drugs/title/description")
             
             except Exception as e:
                 logger.warning(f"Error ingesting from {registry_name}: {str(e)}")
         
-        logger.info(f"Ingest complete: {len(all_trials)} trials processed")
+        logger.info(f"Ingest complete: {len(all_trials)} valid trials (filtered {filtered_count} hallucinations)")
         return all_trials
+    
+    def _validate_drug_in_trial(self, trial: TrialRecord, drug_name: str) -> bool:
+        """
+        CRITICAL FIX: Validate that the drug name actually appears in the trial data.
+        This prevents "Lopinavir showing as aspirin trials" scenarios.
+        """
+        import difflib
+        
+        drug_name_lower = drug_name.lower().strip()
+        
+        # Check 1: Direct match in extracted drug names
+        if trial.drug_names:
+            for recorded_drug in trial.drug_names:
+                if drug_name_lower in recorded_drug.lower() or recorded_drug.lower() in drug_name_lower:
+                    return True
+        
+        # Check 2: Fuzzy match in trial title (must be >60% similar)
+        if trial.title:
+            if difflib.SequenceMatcher(None, drug_name_lower, trial.title.lower()).ratio() > 0.6:
+                return True
+        
+        # Check 3: Substring match in description or inclusion/exclusion criteria
+        description_text = f" {trial.description or ''} {' '.join(trial.inclusion_criteria or [])} {' '.join(trial.exclusion_criteria or '')} ".lower()
+        if drug_name_lower in description_text:
+            return True
+        
+        # Check 4: Fuzzy match with common synonyms
+        synonyms = {
+            "aspirin": ["acetylsalicylic", "asa", "salicylate"],
+            "ibuprofen": ["advil", "motrin", "ibu"],
+            "metformin": ["glucophage", "fortamet"],
+            "paracetamol": ["acetaminophen", "tylenol"],
+        }
+        if drug_name_lower in synonyms:
+            for syn in synonyms[drug_name_lower]:
+                if syn in description_text:
+                    return True
+        
+        return False
 
 
 # ============================================================================
@@ -364,7 +406,30 @@ class TrialDocumentParser:
     
     def _parse_ctgov(self, raw: Dict, source_url: str) -> TrialRecord:
         """Parse ClinicalTrials.gov format"""
-        nct_id = raw.get("nctId", f"NCT{uuid.uuid4().hex[:8].upper()}")
+        # CRITICAL FIX: Validate NCT ID - never generate fake IDs
+        nct_id = raw.get("nctId")
+        
+        if not nct_id:
+            # Try alternative path
+            proto = raw.get("protocolSection", {})
+            ident = proto.get("identificationModule", {})
+            nct_id = ident.get("nctId")
+        
+        # Validate NCT ID format: NCT followed by exactly 8 digits
+        import re
+        if not nct_id or not re.match(r"^NCT\d{8}$", nct_id):
+            logger.warning(f"Invalid or missing NCT ID in trial data, skipping")
+            # Return a minimal placeholder that will be filtered out
+            return TrialRecord(
+                trial_id="INVALID",
+                registry_name="clinicaltrials.gov",
+                source_url=source_url,
+                drug_names=[],
+                indication="",
+                phase=TrialPhase.NOT_APPLICABLE,
+                status=TrialStatus.UNKNOWN,
+            )
+        
         proto = raw.get("protocolSection", {})
         ident = proto.get("identificationModule", {})
         status_mod = proto.get("statusModule", {})
@@ -406,9 +471,22 @@ class TrialDocumentParser:
     
     def _parse_euctr(self, raw: Dict, source_url: str) -> TrialRecord:
         """Parse EU CTR format"""
-        # Placeholder
+        # CRITICAL: Don't generate fake IDs - mark as unavailable
+        euctr_id = raw.get("eudract_number")
+        if not euctr_id:
+            logger.warning("No EudraCT number found, skipping trial")
+            return TrialRecord(
+                trial_id="INVALID",
+                registry_name="EUCTR",
+                source_url=source_url,
+                drug_names=[],
+                indication="",
+                phase=TrialPhase.NOT_APPLICABLE,
+                status=TrialStatus.UNKNOWN,
+            )
+        
         return TrialRecord(
-            trial_id=f"EUCTR{uuid.uuid4().hex[:8]}",
+            trial_id=euctr_id,
             registry_name="EUCTR",
             source_url=source_url,
             drug_names=[],
@@ -419,8 +497,14 @@ class TrialDocumentParser:
     
     def _parse_generic(self, raw: Dict, registry_name: str, source_url: str) -> TrialRecord:
         """Fallback generic parser"""
+        # CRITICAL: Don't generate fake IDs - require valid trial identifier
+        trial_id = raw.get("trial_id") or raw.get("id") or raw.get("identifier")
+        if not trial_id:
+            logger.warning(f"No valid trial ID found for {registry_name}, skipping")
+            trial_id = "INVALID"
+        
         return TrialRecord(
-            trial_id=f"TRIAL{uuid.uuid4().hex[:8]}",
+            trial_id=trial_id,
             registry_name=registry_name,
             source_url=source_url,
             drug_names=[],
@@ -1096,7 +1180,15 @@ class ClinicalTrialsAgent:
             
             # 1. Ingest trials from registries
             trials = self.ingestion_pipeline.ingest_trials(drug_name, indication)
-            logger.info(f"Found {len(trials)} trials")
+            
+            # CRITICAL FIX: Filter out invalid/hallucinated trial IDs
+            valid_trials = [t for t in trials if t.trial_id and t.trial_id != "INVALID"]
+            invalid_count = len(trials) - len(valid_trials)
+            if invalid_count > 0:
+                logger.warning(f"Filtered out {invalid_count} trials with invalid IDs")
+            trials = valid_trials
+            
+            logger.info(f"Found {len(trials)} valid trials")
             
             # 2. Index trials
             for trial in trials:
@@ -1110,6 +1202,14 @@ class ClinicalTrialsAgent:
                     self.index_manager.store_evidence(evidence)
                     all_evidence.append(evidence.to_dict())
             
+            # 3.5. Mine failed trials for repurposing opportunities (Master Plan Priority #4)
+            failed_trials = self.mine_failed_trials(trials)
+            logger.info(f"Failed trial mining: {len(failed_trials)} efficacy failures identified")
+            
+            # 3.6. Extract dosing information from completed trials
+            dosing_data = self.extract_dosing_information(trials)
+            logger.info(f"Dosing extraction: {len(dosing_data)} trials with dose/route/duration data")
+            
             # 4. Compile result
             trial_dicts = []
             for trial in trials:
@@ -1121,11 +1221,16 @@ class ClinicalTrialsAgent:
                 'agent': 'clinical_agent',
                 'drug': drug_name,
                 'indication': indication,
+                'trial_count': len(trials),
                 'trials_found': len(trials),
                 'trials': trial_dicts[:3],  # Top 3 for brevity
+                'failed_trials': failed_trials,  # Master Plan Priority #4
+                'dosing_data': dosing_data,  # Dose/route/duration from trials
                 'evidence_items': all_evidence,
                 'summary': f"Identified {len(trials)} clinical trials for {drug_name} in {indication}. "
-                          f"Generated {len(all_evidence)} evidence items with high confidence.",
+                          f"Generated {len(all_evidence)} evidence items. "
+                          f"{len(failed_trials)} failed trials identified as repurposing opportunities. "
+                          f"{len(dosing_data)} trials with dosing data.",
                 'status': 'success' if len(trials) > 0 else 'partial',
                 'timestamp': datetime.now(UTC).isoformat(),
             }
@@ -1143,6 +1248,123 @@ class ClinicalTrialsAgent:
                 'error': str(e),
                 'timestamp': datetime.now(UTC).isoformat(),
             }
+    
+    def mine_failed_trials(self, trials: List[TrialRecord]) -> List[Dict[str, Any]]:
+        """
+        Extract trials terminated for lack of efficacy/futility/business reasons.
+        Master Plan Priority #4: Failed trial mining.
+        
+        These are repurposing gold mines - human safety data exists but failed for wrong reason.
+        """
+        failed_trials = []
+        
+        efficacy_failure_keywords = [
+            "efficacy", "futility", "business decision", "lack of efficacy",
+            "insufficient enrollment", "sponsor decision", "strategic"
+        ]
+        
+        safety_failure_keywords = [
+            "safety", "adverse event", "toxicity", "serious adverse event",
+            "death", "harm", "tolerability"
+        ]
+        
+        for trial in trials:
+            # Check if trial is terminated or withdrawn
+            if trial.status not in [TrialStatus.TERMINATED, TrialStatus.WITHDRAWN]:
+                continue
+            
+            # Check why_stopped field (needs to be added to TrialRecord if not present)
+            why_stopped = getattr(trial, "why_stopped", "").lower()
+            why_stopped_reason = getattr(trial, "why_stopped_reason", "").lower()
+            
+            # Check if stopped for efficacy/business reasons (NOT safety)
+            is_efficacy_failure = any(
+                keyword in why_stopped or keyword in why_stopped_reason
+                for keyword in efficacy_failure_keywords
+            )
+            
+            is_safety_failure = any(
+                keyword in why_stopped or keyword in why_stopped_reason
+                for keyword in safety_failure_keywords
+            )
+            
+            # Only include if efficacy failure and NOT safety failure
+            if is_efficacy_failure and not is_safety_failure:
+                failed_trials.append({
+                    "trial_id": trial.trial_id,
+                    "drug_names": trial.drug_names,
+                    "indication": trial.indication,
+                    "phase": trial.phase.value if isinstance(trial.phase, TrialPhase) else trial.phase,
+                    "status": trial.status.value if isinstance(trial.status, TrialStatus) else trial.status,
+                    "why_stopped": why_stopped,
+                    "enrollment": trial.enrollment,
+                    "source_url": trial.source_url,
+                    "repurposing_opportunity": "High - human safety data established, failed for different indication",
+                    "next_steps": "Review dosing, PK/PD data, and mechanistic rationale for new indication"
+                })
+                
+                logger.info(f"Failed trial identified: {trial.trial_id} - stopped for: {why_stopped}")
+        
+        return failed_trials
+    
+    def extract_dosing_information(self, trials: List[TrialRecord]) -> List[Dict[str, Any]]:
+        """
+        Extract dose, route, and duration information from completed trials.
+        Master Plan Priority #4: Dosing extraction for repurposing.
+        
+        This data is critical for planning new trials and understanding PK/PD.
+        """
+        dosing_data = []
+        
+        route_keywords = {
+            "oral": ["oral", "po", "by mouth", "tablet", "capsule", "pill"],
+            "intravenous": ["intravenous", "iv", "infusion", "injection"],
+            "subcutaneous": ["subcutaneous", "sc", "subq", "injection"],
+            "intramuscular": ["intramuscular", "im", "injection"],
+            "topical": ["topical", "cream", "ointment", "gel"],
+            "inhalation": ["inhalation", "inhaled", "nebulizer"],
+        }
+        
+        for trial in trials:
+            # Only extract from completed trials
+            if trial.status not in [TrialStatus.COMPLETED]:
+                continue
+            
+            # Extract dose information from trial description (mock - in production parse structured fields)
+            dose = trial.dose if hasattr(trial, 'dose') and trial.dose else None
+            route = trial.route if hasattr(trial, 'route') and trial.route else None
+            duration = trial.duration if hasattr(trial, 'duration') and trial.duration else None
+            
+            # Try to infer route from primary outcomes if not explicitly provided
+            if not route:
+                for outcome in trial.primary_outcomes:
+                    outcome_text = f"{outcome.measure} {outcome.description}".lower()
+                    for route_name, keywords in route_keywords.items():
+                        if any(keyword in outcome_text for keyword in keywords):
+                            route = route_name
+                            break
+                    if route:
+                        break
+            
+            # If we have at least one piece of dosing information, include it
+            if dose or route or duration:
+                dosing_data.append({
+                    "trial_id": trial.trial_id,
+                    "drug_names": trial.drug_names,
+                    "indication": trial.indication,
+                    "phase": trial.phase.value if isinstance(trial.phase, TrialPhase) else trial.phase,
+                    "dose": dose or "Not specified",
+                    "route": route or "Not specified",
+                    "duration": duration or "Not specified",
+                    "enrollment": trial.enrollment,
+                    "completion_date": trial.completion_date,
+                    "source_url": trial.source_url,
+                    "utility": "Dosing guidance for repurposing trial design"
+                })
+                
+                logger.info(f"Dosing extracted: {trial.trial_id} - {dose} {route} for {duration}")
+        
+        return dosing_data
 
 
 # ============================================================================

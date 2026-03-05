@@ -1,0 +1,16 @@
+﻿{
+    "success":  true,
+    "data":  {
+                 "drug_name":  "aspirin",
+                 "chembl_id":  "CHEMBL25",
+                 "discovery_result":  {
+                                          "candidates":  [
+
+                                                         ],
+                                          "message":  "No disease candidates found"
+                                      },
+                 "candidates":  [
+
+                                ]
+             }
+}

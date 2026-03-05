@@ -1,0 +1,2264 @@
+{
+  "success": true,
+  "data": {
+    "drug_name": "ibuprofen",
+    "chembl_id": "CHEMBL521",
+    "drug_profile": {
+      "chembl_id": "CHEMBL521",
+      "synonyms": [
+        "Maxa-gesic",
+        "Cuprofen for child",
+        "Nurofen recovery",
+        "Ibuprohm",
+        "Children's motrin",
+        "Junifen",
+        "Pediatric advil",
+        "Ibutime",
+        "Proflex",
+        "Rimafen",
+        "Ibuprofen component of sine-aid ib",
+        "Ibu-tab",
+        "Arthrofen 200",
+        "Midol liquid gels",
+        "Fenpaed",
+        "Ibuprofen component of children's motrin cold",
+        "Motrin migraine pain",
+        "Paxofen",
+        "Mandafen",
+        "Midol",
+        "Lidifen-f",
+        "Caldolor",
+        "NSC-256857",
+        "Orbifen",
+        "IB-100",
+        "U-18573",
+        "Femafen",
+        "Pacifene",
+        "Cuprofen plus",
+        "Ibuprofenum",
+        "Burana",
+        "Junior strength advil",
+        "Ibumetin",
+        "Suspren",
+        "Isisfen",
+        "Ibuprofen component of advil allergy sinus",
+        "Ibuprofen component of combogesic",
+        "Brufen ret",
+        "Co-op",
+        "Advil migraine liqui-gels",
+        "Ibuprofen component of duexis",
+        "Children's advil",
+        "Nuprin",
+        "Nurofen plus",
+        "Ibular",
+        "Nurofen sinus",
+        "Ibugel fte",
+        "Children's elixsure",
+        "Ibuprofen component of vicoprofen",
+        "Nurofen back pain sr",
+        "Infant's advil",
+        "Lobufen",
+        "Novaprin",
+        "Ibuprofen gen.orph",
+        "Junior strength ibuprofen",
+        "Nurofen 400",
+        "Nurofen for child",
+        "Anadin joint pain",
+        "Rufen",
+        "Phorpain max strgh",
+        "Ibu-tab 200",
+        "Inoven",
+        "Relcofen",
+        "Ibuprin",
+        "Anadin ultra",
+        "Ibuprofen component of children's advil cold",
+        "Advil",
+        "Phorpain",
+        "M01AE01",
+        "Ibuspray",
+        "Profen",
+        "Advil liqui-gels",
+        "Migrafen",
+        "Anadin liquifast",
+        "Phor pain",
+        "Medipren",
+        "Nurofen solb",
+        "Inabrin",
+        "Apsifen-f",
+        "Manorfen",
+        "Fenbid fte",
+        "Ibu-slo",
+        "Ibumed",
+        "Ibugel",
+        "Tab-profen",
+        "Ibufac",
+        "Apsifen",
+        "Lidifen",
+        "Ibuprofen component of reprexain",
+        "Ibuprofen component of combunox",
+        "Cap-profen",
+        "Junior strength motrin",
+        "U-18,573",
+        "Ibuderm",
+        "Arthrofen 400",
+        "Fenbid",
+        "Feverfen",
+        "Anadin period pain relief",
+        "Nurofen child",
+        "Seclodin",
+        "Phensic",
+        "Arthrofen 600",
+        "Ibuprofeno",
+        "Deep relief",
+        "Proflex sr",
+        "Ebufac",
+        "Ibu",
+        "Ibumousse",
+        "Ibuleve",
+        "Children's advil-flavored",
+        "Motrin ib",
+        "RD 13621",
+        "Fleximex",
+        "Ibuprofen component of advil congestion relief",
+        "Aches-n-pain",
+        "Children's ibuprofen",
+        "Pedea",
+        "Codafen continus",
+        "Ibucalm",
+        "IP-82",
+        "Motrin",
+        "Ibuprofene"
+      ],
+      "known_targets": [
+        {
+          "target_chembl_id": "CHEMBL2094253",
+          "target_name": "PTGS2",
+          "target_name_raw": "Cyclooxygenase",
+          "target_gene_symbol": "PTGS2",
+          "target_type": "PROTEIN FAMILY",
+          "organism": "Homo sapiens",
+          "action_type": "INHIBITOR",
+          "mechanism_of_action": "Cyclooxygenase inhibitor"
+        }
+      ],
+      "approved_indications": [
+        "Fever",
+        "Myalgia",
+        "Pain",
+        "Arthralgia",
+        "Vaginitis",
+        "Common Cold",
+        "Rheumatic Diseases",
+        "Cardiovascular Diseases",
+        "Headache",
+        "Arthritis, Juvenile",
+        "Arthritis, Rheumatoid",
+        "Acute Pain",
+        "Ductus Arteriosus, Patent",
+        "Back Pain",
+        "Dysmenorrhea",
+        "Influenza, Human",
+        "Toothache",
+        "Arthritis",
+        "Muscle Cramp",
+        "Pharyngitis",
+        "Osteoarthritis",
+        "Migraine Disorders"
+      ],
+      "max_phase": "4.0",
+      "mechanism_of_action": "Cyclooxygenase inhibitor",
+      "drug_class": null
+    },
+    "discovery_result": {
+      "candidates_found": 10,
+      "top_candidates": [
+        {
+          "disease_name": "Patent ductus arteriosus",
+          "mechanistic_score": 0.803,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "ankylosing spondylitis",
+          "mechanistic_score": 0.789,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Musculoskeletal"
+        },
+        {
+          "disease_name": "inflammation",
+          "mechanistic_score": 0.779,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "phenotype"
+        },
+        {
+          "disease_name": "juvenile idiopathic arthritis",
+          "mechanistic_score": 0.767,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Musculoskeletal"
+        },
+        {
+          "disease_name": "ulcerative colitis",
+          "mechanistic_score": 0.746,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "genetic, familial or congenital disease"
+        },
+        {
+          "disease_name": "gout",
+          "mechanistic_score": 0.746,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Musculoskeletal"
+        },
+        {
+          "disease_name": "migraine disorder",
+          "mechanistic_score": 0.731,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "stroke",
+          "mechanistic_score": 0.722,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "coronary artery disease",
+          "mechanistic_score": 0.615,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Cardiovascular"
+        },
+        {
+          "disease_name": "rheumatoid arthritis",
+          "mechanistic_score": 0.611,
+          "linking_targets": [
+            "PTGS2"
+          ],
+          "therapeutic_area": "Musculoskeletal"
+        }
+      ]
+    },
+    "candidates": [
+      {
+        "indication": "Patent ductus arteriosus",
+        "mechanistic_score": 0.803,
+        "linking_targets": [
+          "PTGS2"
+        ],
+        "tier": "tier_2_plausible",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "overlap_score": 1.0,
+            "overlapping_targets": [
+              "PTGS1",
+              "PTGS2"
+            ],
+            "drug_targets": [
+              "PTGS1",
+              "PTGS2"
+            ],
+            "disease_genes": [
+              "PTGS2",
+              "PTGS1",
+              "FLNA",
+              "PTGER2",
+              "PTGER1",
+              "TRPV1",
+              "FAAH",
+              "PTPN11",
+              "ABCC9",
+              "PSMC3",
+              "INPP5E",
+              "LSM1",
+              "DHX15",
+              "MUC1",
+              "RPL17",
+              "CD8A",
+              "TGFB1",
+              "KRT19",
+              "ATM",
+              "TRIM29",
+              "CD4"
+            ],
+            "pathways": [
+              "Requires Reactome/KEGG enrichment"
+            ],
+            "mechanistic_plausibility": "high",
+            "gate_passed": true,
+            "gate_rejection_reason": null,
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {
+              "PTGS1": "unknown",
+              "PTGS2": "unknown"
+            },
+            "timestamp": "2026-03-04T13:25:22.941530+00:00",
+            "summary": "Ibuprofen shows high mechanistic plausibility for patent ductus arteriosus (overlap score: 1.000). Shared targets: PTGS1, PTGS2. Pathways: Requires Reactome/KEGG enrichment.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.08
+          },
+          "patent": {
+            "agent": "patent_agent",
+            "drug": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "patents_found": 0,
+            "fto_report": {
+              "report_id": "368fc324-8ae5-4266-8a8e-e93d5b135333",
+              "drug_name": "ibuprofen",
+              "indication": "Patent ductus arteriosus",
+              "overall_fto_status": "green",
+              "blocking_patents": [],
+              "caution_patents": [],
+              "clear_patents": [],
+              "total_patents_analyzed": 0,
+              "risk_summary": "LOW RISK: All 0 patent(s) analyzed show no blocking claims.",
+              "recommendations": [],
+              "hard_veto": false,
+              "hard_veto_reason": null,
+              "blocking_patent_expiry_date": null,
+              "gate_passed": true,
+              "created_at": "2026-03-04T13:25:38.814567"
+            },
+            "patents": [],
+            "blocking_patents": [],
+            "status": "partial",
+            "timestamp": "2026-03-04T13:25:38.814567"
+          },
+          "literature": {
+            "agent": "literature_agent",
+            "drug": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "papers_found": 9,
+            "publication_count": 9,
+            "papers": [
+              {
+                "record_id": "3d784d3e-4229-463e-a86f-703617a31251",
+                "metadata": {
+                  "paper_id": "37169914",
+                  "pmid": "37169914",
+                  "doi": "10.1038/s41372-023-01697-2",
+                  "title": "Acetaminophen for the patent ductus arteriosus: has safety been adequately demonstrated?",
+                  "authors": [
+                    "Wright CJ",
+                    "McCulley DJ",
+                    "Mitra S",
+                    "Jensen EA"
+                  ],
+                  "abstract": "Patent ductus arteriosus (PDA) is the most common cardiovascular condition diagnosed in premature infants. Acetaminophen was first proposed as a potential treatment for PDA in 2011. Since that time acetaminophen use among extremely preterm neonates has increased substantially. The limited available data demonstrate that acetaminophen reduces PDA without evident hepatotoxicity. These findings have led some to suggest that acetaminophen is a safe and effective therapy for PDA closure. However, the lack of apparent hepatoxicity is predictable. Acetaminophen induced cellular injury is due to CYP2E1 derived metabolites; and hepatocyte CYP2E1 expression is low in the fetal and neonatal period. Here, we review preclinical and clinical data that support the hypothesis that the lung, which expresses high levels of CYP2E1 during fetal and early postnatal development, may be particularly susceptible to acetaminophen induced toxicity. Despite these emerging data, the true potential pulmonary risks and benefits of acetaminophen for PDA closure are largely unknown. The available clinical studies in are marked by significant weakness including low sample sizes and minimal evaluation of extremely preterm infants who are typically at highest risk of pulmonary morbidity. We propose that studies interrogating mechanisms linking developmentally regulated, cell-specific CYP2E1 expression and acetaminophen-induced toxicity as well as robust assessment of pulmonary outcomes in large trials that evaluate the safety and efficacy of acetaminophen in extremely preterm infants are needed.",
+                  "journal": "Journal of perinatology : official journal of the California Perinatal Association",
+                  "publication_date": "2023",
+                  "url": "",
+                  "source": "pubmed"
+                },
+                "full_text": "Patent ductus arteriosus (PDA) is the most common cardiovascular condition diagnosed in premature infants. Acetaminophen was first proposed as a potential treatment for PDA in 2011. Since that time acetaminophen use among extremely preterm neonates has increased substantially. The limited available data demonstrate that acetaminophen reduces PDA without evident hepatotoxicity. These findings have led some to suggest that acetaminophen is a safe and effective therapy for PDA closure. However, the",
+                "sentences_count": 11,
+                "entities": [
+                  {
+                    "entity_id": "f02d62a0-f6f3-4119-9145-9a477b18e8bd",
+                    "text": "acetaminophen",
+                    "entity_type": "drug",
+                    "normalized_name": "acetaminophen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "a0c174ce-9088-4ba4-a8a5-b7ecabf2809a",
+                    "text": "PDA",
+                    "entity_type": "disease",
+                    "normalized_name": "pda",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "556c5b49-8a38-4124-bf2f-3f5c00c0ad6a",
+                    "text": "CYP2E1",
+                    "entity_type": "drug",
+                    "normalized_name": "cyp2e1",
+                    "confidence": 0.85
+                  }
+                ],
+                "relations": [],
+                "claims": [
+                  {
+                    "claim_id": "1fd85918-edfc-482c-aa83-5947bf3cee07",
+                    "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [
+                      {
+                        "entity_id": "f02d62a0-f6f3-4119-9145-9a477b18e8bd",
+                        "text": "acetaminophen",
+                        "entity_type": "drug",
+                        "normalized_name": "acetaminophen",
+                        "confidence": 0.85
+                      },
+                      {
+                        "entity_id": "a0c174ce-9088-4ba4-a8a5-b7ecabf2809a",
+                        "text": "PDA",
+                        "entity_type": "disease",
+                        "normalized_name": "pda",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "relations": [],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:25:51.641219",
+                "last_updated": "2026-03-04T13:25:51.641219"
+              },
+              {
+                "record_id": "ac98551c-977e-4afe-b792-884c02f392fc",
+                "metadata": {
+                  "paper_id": "41364689",
+                  "pmid": "41364689",
+                  "doi": "10.1001/jama.2025.23330",
+                  "title": "Expectant Management vs Medication for Patent Ductus Arteriosus in Preterm Infants: The PDA Randomized Clinical Trial.",
+                  "authors": [
+                    "Laughon MM",
+                    "Thomas SM",
+                    "Watterberg KL",
+                    "Kennedy KA",
+                    "Keszler M",
+                    "Ambalavanan N",
+                    "Davis AS",
+                    "Slaughter JL",
+                    "Guillet R",
+                    "Colaizy TT",
+                    "Cotten CM",
+                    "Dhawan MA",
+                    "Bose CL",
+                    "Talbert J",
+                    "Smucny S",
+                    "Benitz WE",
+                    "Rysavy MA",
+                    "Ohls RK",
+                    "Baserga MC",
+                    "DeMauro SB",
+                    "Jaleel M",
+                    "Jackson WM",
+                    "Carlo WA",
+                    "Puopolo KM",
+                    "Hibbs AM",
+                    "Katheria A",
+                    "Sánchez PJ",
+                    "D'Angio CT",
+                    "Patel RM",
+                    "Johnson BA",
+                    "Chock VY",
+                    "Bhatt AJ",
+                    "Merhar SL",
+                    "Moore R",
+                    "Laptook AR",
+                    "Ghavam S",
+                    "Fuller J",
+                    "Vyas-Read S",
+                    "Kicklighter SD",
+                    "Steinbrekera B",
+                    "Anderson K",
+                    "Reynolds AM",
+                    "Wyckoff MH",
+                    "Montoya C",
+                    "Das A",
+                    "Do B",
+                    "Chang S",
+                    "Higgins RD",
+                    "Walsh MC",
+                    "Eunice Kennedy Shriver National Institute of Child Health and Human Development Neonatal Research Network."
+                  ],
+                  "abstract": "<h4>Importance</h4>The management of patent ductus arteriosus (PDA) in preterm infants is controversial.<h4>Objective</h4>To determine whether expectant management compared with active treatment of a protocol-defined PDA in preterm infants decreases the incidence of death or bronchopulmonary dysplasia (BPD).<h4>Design, setting, and participants</h4>A randomized clinical trial including infants born at 22 to 28 weeks' gestation and diagnosed with a protocol-defined PDA between the age of 48 hours and 21 days at screening. The trial was conducted from December 2018 to December 2024 at 33 hospitals within the National Institute of Child Health and Human Development Neonatal Research Network. The final date of follow-up was June 2025.<h4>Interventions</h4>Infants with PDA were randomized to expectant management (n = 242) or active treatment (n = 240; acetaminophen, ibuprofen, or indomethacin) to close the PDA.<h4>Main outcomes and measures</h4>The primary outcome was death or BPD at 36 weeks' postmenstrual age. The secondary outcomes included the components of the primary outcome and other morbidities of prematurity.<h4>Results</h4>A total of 482 infants were randomized (median gestational age, 25 weeks [IQR, 24 to 27 weeks]; median birth weight, 760 g [IQR, 620 to 935 g]). The trial was stopped for futility and safety after the 50% interim analysis for the primary outcome due to higher survival in the expectant management group. The incidence of death or BPD was 80.9% (195/241) of infants in the expectant management group vs 79.6% (191/240) of infants in the active treatment group (adjusted risk difference, 1.2% [95% CI, -5.7% to 8.1%]; P = .73). The incidence of death before 36 weeks' postmenstrual age was 4.1% (10/241) of infants in the expectant management group vs 9.6% (23/240) of infants in the active treatment group (adjusted risk difference, -5.6% [95% CI, -10.1% to -1.2%]; P = .01). Infections resulting in death occurred in 0.8% (2/241) of infants in the expectant management group vs 3.8% (9/240) of infants in the active treatment group.<h4>Conclusions and relevance</h4>In extremely preterm infants with a protocol-defined PDA, death or BPD did not differ between the expectant management group and the active treatment group. Survival was substantially higher with expectant management.<h4>Trial registration</h4>ClinicalTrials.gov Identifier: NCT03456336.",
+                  "journal": "",
+                  "publication_date": "2026-02-01",
+                  "url": "https://doi.org/10.1001/jama.2025.23330",
+                  "source": "europepmc"
+                },
+                "full_text": "<h4>Importance</h4>The management of patent ductus arteriosus (PDA) in preterm infants is controversial.<h4>Objective</h4>To determine whether expectant management compared with active treatment of a protocol-defined PDA in preterm infants decreases the incidence of death or bronchopulmonary dysplasia (BPD).<h4>Design, setting, and participants</h4>A randomized clinical trial including infants born at 22 to 28 weeks' gestation and diagnosed with a protocol-defined PDA between the age of 48 hours",
+                "sentences_count": 31,
+                "entities": [
+                  {
+                    "entity_id": "3478f967-8b69-47a3-83f7-eecd6cb28be5",
+                    "text": "acetaminophen",
+                    "entity_type": "drug",
+                    "normalized_name": "acetaminophen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "fb3205b1-90a1-44ec-ad09-c3827f8b5b64",
+                    "text": "ibuprofen",
+                    "entity_type": "drug",
+                    "normalized_name": "ibuprofen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "0ab747fa-c562-4b73-be28-3591f767a911",
+                    "text": "indomethacin",
+                    "entity_type": "drug",
+                    "normalized_name": "indomethacin",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "d7c997ad-99a4-4e0c-ae75-1ca28090c241",
+                    "text": "PDA",
+                    "entity_type": "disease",
+                    "normalized_name": "pda",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "a9c25bf6-f74d-4661-86f6-242901c9ad0c",
+                    "text": "BPD",
+                    "entity_type": "disease",
+                    "normalized_name": "bpd",
+                    "confidence": 0.85
+                  }
+                ],
+                "relations": [],
+                "claims": [
+                  {
+                    "claim_id": "1f9f7d46-c477-4f8c-a62e-6d6cfe9373b0",
+                    "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [
+                      {
+                        "entity_id": "3478f967-8b69-47a3-83f7-eecd6cb28be5",
+                        "text": "acetaminophen",
+                        "entity_type": "drug",
+                        "normalized_name": "acetaminophen",
+                        "confidence": 0.85
+                      },
+                      {
+                        "entity_id": "fb3205b1-90a1-44ec-ad09-c3827f8b5b64",
+                        "text": "ibuprofen",
+                        "entity_type": "drug",
+                        "normalized_name": "ibuprofen",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "relations": [],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:25:55.878537",
+                "last_updated": "2026-03-04T13:25:55.878537"
+              },
+              {
+                "record_id": "6c92a1bb-51a2-4c8d-88b0-4d54fc37b78e",
+                "metadata": {
+                  "paper_id": "40336207",
+                  "pmid": "40336207",
+                  "doi": "10.1177/19345798251337433",
+                  "title": "Combination therapy for patent ductus arteriosus in preterm infants: Narrative review.",
+                  "authors": [
+                    "Bitar E",
+                    "Surak A",
+                    "Kumaran K",
+                    "Hyderi A."
+                  ],
+                  "abstract": "Management of patent ductus arteriosus (PDA) in preterm infants remains controversial and is a matter of continuous debate with a lack of consensus among practitioners on the optimal therapeutic strategy. The success rate of the most commonly used agents for PDA closure is variable, despite different medications, dosage regimens, routes of administration, and timing or duration of treatment. Combination therapy works by inhibiting prostaglandin production at different levels on the synthesis pathway; so combining acetaminophen and nonsteroidal anti-inflammatory drugs might potentially enhance PDA closure. Few studies explored the effectiveness and safety profile of combination therapy. This review summarizes the best available evidence on the efficacy and safety profile of combination pharmacological therapy for PDA treatment in preterm infants.",
+                  "journal": "",
+                  "publication_date": "2025-05-07",
+                  "url": "https://doi.org/10.1177/19345798251337433",
+                  "source": "europepmc"
+                },
+                "full_text": "Management of patent ductus arteriosus (PDA) in preterm infants remains controversial and is a matter of continuous debate with a lack of consensus among practitioners on the optimal therapeutic strategy. The success rate of the most commonly used agents for PDA closure is variable, despite different medications, dosage regimens, routes of administration, and timing or duration of treatment. Combination therapy works by inhibiting prostaglandin production at different levels on the synthesis pat",
+                "sentences_count": 5,
+                "entities": [
+                  {
+                    "entity_id": "183f1609-cf77-4c38-babb-2710ef875f6d",
+                    "text": "patent ductus arteriosus",
+                    "entity_type": "disease",
+                    "normalized_name": "patent ductus arteriosus",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "9bede3c4-bb3f-4b7a-9334-21c53b7d0805",
+                    "text": "PDA",
+                    "entity_type": "disease",
+                    "normalized_name": "pda",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "0879534c-8baf-4146-81ed-b96ffa551f28",
+                    "text": "prostaglandin",
+                    "entity_type": "protein",
+                    "normalized_name": "prostaglandin",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "1d0e73e0-a0ae-4418-82f8-797200fb59e4",
+                    "text": "acetaminophen",
+                    "entity_type": "drug",
+                    "normalized_name": "acetaminophen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "8ca5213b-d753-40bb-b701-15b92635cf19",
+                    "text": "nonsteroidal anti-inflammatory drugs",
+                    "entity_type": "drug",
+                    "normalized_name": "nonsteroidal anti-inflammatory drugs",
+                    "confidence": 0.85
+                  }
+                ],
+                "relations": [
+                  {
+                    "relation_id": "9dbe2f3a-a1a0-4079-a3ee-6499e21d923b",
+                    "entity1_id": "1d0e73e0-a0ae-4418-82f8-797200fb59e4",
+                    "entity2_id": "0879534c-8baf-4146-81ed-b96ffa551f28",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "db056532-6095-416b-9392-d29477408c15",
+                    "entity1_id": "8ca5213b-d753-40bb-b701-15b92635cf19",
+                    "entity2_id": "0879534c-8baf-4146-81ed-b96ffa551f28",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  }
+                ],
+                "claims": [
+                  {
+                    "claim_id": "29975733-dda2-4f3c-96ca-051c7fc07eb2",
+                    "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [
+                      {
+                        "entity_id": "183f1609-cf77-4c38-babb-2710ef875f6d",
+                        "text": "patent ductus arteriosus",
+                        "entity_type": "disease",
+                        "normalized_name": "patent ductus arteriosus",
+                        "confidence": 0.85
+                      },
+                      {
+                        "entity_id": "9bede3c4-bb3f-4b7a-9334-21c53b7d0805",
+                        "text": "PDA",
+                        "entity_type": "disease",
+                        "normalized_name": "pda",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "relations": [
+                      {
+                        "relation_id": "9dbe2f3a-a1a0-4079-a3ee-6499e21d923b",
+                        "entity1_id": "1d0e73e0-a0ae-4418-82f8-797200fb59e4",
+                        "entity2_id": "0879534c-8baf-4146-81ed-b96ffa551f28",
+                        "relation_type": "targets_pathway",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:25:56.410675",
+                "last_updated": "2026-03-04T13:25:56.410675"
+              }
+            ],
+            "total_claims": 10,
+            "evidence_summary": {
+              "drug": "ibuprofen",
+              "indication": "Patent ductus arteriosus",
+              "papers_reviewed": 9,
+              "total_claims": 10,
+              "mechanisms": [
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "37169914"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41364689"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40336207"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40717758"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "39862321"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40829654"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40426756"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41522683"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in Patent ductus arteriosus through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41052898"
+                }
+              ],
+              "efficacy_findings": [
+                {
+                  "text": "Study of ibuprofen in Patent ductus arteriosus patients: p-value = 0.011",
+                  "confidence": 0.8,
+                  "results": [
+                    {
+                      "result_id": "79a740c3-15ab-4a6e-ae34-dcb3f2490d61",
+                      "metric": "p_value",
+                      "value": 0.011,
+                      "unit": null,
+                      "interpretation": "p-value = 0.011"
+                    }
+                  ],
+                  "source_pmid": "39862321"
+                }
+              ],
+              "safety_concerns": [],
+              "llm_summary": "The scientific evidence supports the use of ibuprofen to treat Patent ductus arteriosus (PDA) in preterm infants. Ibuprofen exhibits therapeutic potential through multiple molecular mechanisms, including inhibition of prostaglandin production, which is crucial for PDA closure. Clinical efficacy studies have demonstrated that ibuprofen is effective in reducing PDA in preterm infants, with a significant reduction in PDA incidence compared to paracetamol (p-value = 0.011). However, safety considerations are essential, as ibuprofen may be associated with adverse effects such as gastrointestinal bleeding and renal impairment, particularly in extremely preterm neonates. Overall, ibuprofen is considered a safe and effective therapy for PDA closure, although its use should be carefully monitored and individualized based on the infant's clinical condition."
+            },
+            "competition_index_score": 0.9,
+            "sentiment_score": 1.0,
+            "sentiment_breakdown": {
+              "positive": 4,
+              "negative": 0,
+              "inconclusive": 5
+            },
+            "analysis_window_years": 5,
+            "filtered_out_older_papers": 5,
+            "summary": "Identified 9 papers from last 5 years for ibuprofen in Patent ductus arteriosus. Competition index 0.90; sentiment score 1.00. Extracted 10 claims across mechanism, efficacy, and safety.",
+            "status": "success",
+            "timestamp": "2026-03-04T13:26:03.748635"
+          },
+          "safety": {
+            "drug_name": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "safety_score": 0.9,
+            "safety_transfer_score": 0.9,
+            "hard_stop": false,
+            "hard_stop_reason": null,
+            "gate_passed": true,
+            "risk_level": "green",
+            "critical_safety_risk": false,
+            "red_flags": [],
+            "amber_flags": [],
+            "green_flags": [
+              "No boxed warnings or contraindications",
+              "No significant safety signals detected"
+            ],
+            "adverse_events": [
+              {
+                "event_id": "dailymed_label_ibuprofen_0_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Nausea",
+                "meddra_term": "Nausea",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "15%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_1_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Vomiting",
+                "meddra_term": "Vomiting",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "10%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_2_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Abdominal Pain",
+                "meddra_term": "Abdominal Pain",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_3_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Dizziness",
+                "meddra_term": "Dizziness",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_4_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Headache",
+                "meddra_term": "Headache",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_5_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Rash",
+                "meddra_term": "Rash",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "2%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_6_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Allergic Reaction",
+                "meddra_term": "Allergic Reaction",
+                "meddra_code": null,
+                "severity": "severe",
+                "frequency": "0.1%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_7_1772630771.16217",
+                "drug_name": "ibuprofen",
+                "ae_term": "Liver Damage",
+                "meddra_term": "Liver Damage",
+                "meddra_code": null,
+                "severity": "severe",
+                "frequency": "0.01%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:26:11.162170+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              }
+            ],
+            "pk_pd_params": [
+              {
+                "drug_name": "ibuprofen",
+                "parameter": "Bioavailability",
+                "value": 89.0,
+                "unit": "%",
+                "dose": null,
+                "population": null,
+                "source": "dailymed_label",
+                "metadata": {
+                  "extraction_method": "llm"
+                }
+              },
+              {
+                "drug_name": "ibuprofen",
+                "parameter": "Protein binding",
+                "value": 99.0,
+                "unit": "%",
+                "dose": null,
+                "population": null,
+                "source": "dailymed_label",
+                "metadata": {
+                  "extraction_method": "llm"
+                }
+              }
+            ],
+            "signals": [],
+            "boxed_warnings": [],
+            "contraindications": [],
+            "dose_limiting_toxicities": [],
+            "summary": "**Safety Assessment Summary: Ibuprofen for Patent Ductus Arteriosus**\n\nIbuprofen has demonstrated a favorable safety profile for the treatment of patent ductus arteriosus, with a safety score of 0.90/1.0 and no red flags or amber flags identified. The low number of total adverse events (8) and absence of safety signals suggest a low risk of major safety concerns. Overall, the risk-benefit outlook for repurposing ibuprofen in this indication appears favorable, with a strong potential for safe and effective treatment.",
+            "evidence_items": [
+              {
+                "source": "clinicaltrials",
+                "id": "NCT01938144",
+                "title": "Evaluation of the Efficacy and Safety of Two Ibuprofen Combination Products for the Treatment of the Common Cold and Flu in Latin America",
+                "url": "https://clinicaltrials.gov/study/NCT01938144"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT06342830",
+                "title": "Comparing the Effect of Different Intracanal Dressing on Failed Root Canal Treated Cases on Periapical Healing",
+                "url": "https://clinicaltrials.gov/study/NCT06342830"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05632133",
+                "title": "The Lacosamide's Effect on Calcitonin Gene-related Peptide in Migraine Patients",
+                "url": "https://clinicaltrials.gov/study/NCT05632133"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05676892",
+                "title": "Effects of Intravenous Ibuprofen on Acute Pain After Laparoscopic Cholecystectomy",
+                "url": "https://clinicaltrials.gov/study/NCT05676892"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04899401",
+                "title": "Trial To Assess Efficacy and Safety of PediaFlu® in Children With Acute Tonsillopharyngitis / Rhinopharyngitis",
+                "url": "https://clinicaltrials.gov/study/NCT04899401"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04444830",
+                "title": "Sprix for Postoperative Pain Control Following Gynecologic Surgery",
+                "url": "https://clinicaltrials.gov/study/NCT04444830"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04575519",
+                "title": "Adjunctive Acetylsalicylic Acid and Ibuprofen for Tuberculosis",
+                "url": "https://clinicaltrials.gov/study/NCT04575519"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT07102641",
+                "title": "Post-cesarean Analgesia: Comparing Effectiveness of Staggered v. Simultaneous Therapies",
+                "url": "https://clinicaltrials.gov/study/NCT07102641"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05586373",
+                "title": "Ibuprofen vs Dipyrone After C-section in Preeclampsia",
+                "url": "https://clinicaltrials.gov/study/NCT05586373"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT06923540",
+                "title": "Intravenous Acetaminophen to Reduce Post-operative Opioid Consumption",
+                "url": "https://clinicaltrials.gov/study/NCT06923540"
+              },
+              {
+                "source": "dailymed",
+                "title": "ibuprofen Label",
+                "boxed_warnings": 0,
+                "contraindications": 0
+              }
+            ],
+            "timestamp": "2026-03-04T13:26:16.295363+00:00"
+          },
+          "clinical": {
+            "agent": "clinical_agent",
+            "drug": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "trial_count": 0,
+            "trials_found": 0,
+            "trials": [],
+            "failed_trials": [],
+            "dosing_data": [],
+            "evidence_items": [],
+            "summary": "Identified 0 clinical trials for ibuprofen in Patent ductus arteriosus. Generated 0 evidence items. 0 failed trials identified as repurposing opportunities. 0 trials with dosing data.",
+            "status": "partial",
+            "timestamp": "2026-03-04T13:26:18.104479+00:00"
+          },
+          "market": {
+            "agent": "market_agent",
+            "drug": "Advil, Motrin, Nuprin, others",
+            "indication": "Patent Ductus Arteriosus",
+            "market_snapshot": {
+              "snapshot_id": "5706baeb-edbd-4d2b-a42b-57a6228ecce5",
+              "drug_name": "Advil, Motrin, Nuprin, others",
+              "indication": "Patent Ductus Arteriosus",
+              "analysis_date": "2026-03-04T13:26:23.816854",
+              "market_phase": "growth",
+              "geography": "US",
+              "tam_estimate": null,
+              "revenue_scenarios": [],
+              "competitors": [],
+              "pricing_benchmarks": [],
+              "payer_signals": [],
+              "market_size_history": [],
+              "go_to_market_risks": [],
+              "market_summary": "The Patent Ductus Arteriosus market in US represents a TAM of unknown size (no data available). Market is characterized as growth. ",
+              "key_insights": [
+                "Based on the provided market analysis context, here are 3-4 concise business insights for a go-to-market strategy:",
+                "1. **Market Opportunity**: The patent ductus arteriosus (PDA) market has significant growth potential, but its current TAM and CAGR are unknown, indicating a need for thorough market research and analysis to estimate the potential size and growth rate of the market. This information will be crucial in determining the feasibility and scalability of the go-to-market strategy.",
+                "2. **Competitive Landscape**: As there are no direct competitors in the PDA market, the drug has a unique opportunity to establish itself as a leading treatment option, but it's essential to monitor the market for potential entrants and competitors in adjacent therapeutic areas. This will enable the company to stay competitive and adapt its strategy as needed.",
+                "3. **Payer Dynamics**: Payers may be hesitant to reimburse a new treatment for PDA due to limited evidence on its efficacy and safety, making it essential to develop a robust clinical trial program to generate high-quality data that can be used to support reimbursement and coverage decisions. This will help build credibility with payers and increase the likelihood of reimbursement."
+              ],
+              "data_confidence_score": 1.0,
+              "market_opportunity_score": 0.6,
+              "unmet_need_score": 0.5,
+              "opportunity_label": null,
+              "prevalence_adjustment": 1.0,
+              "created_at": "2026-03-04T13:26:23.816854",
+              "last_updated": "2026-03-04T13:26:23.816854",
+              "embedding_present": true
+            },
+            "tam_estimate": null,
+            "revenue_scenarios": [],
+            "competitors": [],
+            "payer_signals": [],
+            "key_insights": [
+              "Based on the provided market analysis context, here are 3-4 concise business insights for a go-to-market strategy:",
+              "1. **Market Opportunity**: The patent ductus arteriosus (PDA) market has significant growth potential, but its current TAM and CAGR are unknown, indicating a need for thorough market research and analysis to estimate the potential size and growth rate of the market. This information will be crucial in determining the feasibility and scalability of the go-to-market strategy.",
+              "2. **Competitive Landscape**: As there are no direct competitors in the PDA market, the drug has a unique opportunity to establish itself as a leading treatment option, but it's essential to monitor the market for potential entrants and competitors in adjacent therapeutic areas. This will enable the company to stay competitive and adapt its strategy as needed.",
+              "3. **Payer Dynamics**: Payers may be hesitant to reimburse a new treatment for PDA due to limited evidence on its efficacy and safety, making it essential to develop a robust clinical trial program to generate high-quality data that can be used to support reimbursement and coverage decisions. This will help build credibility with payers and increase the likelihood of reimbursement."
+            ],
+            "go_to_market_risks": [],
+            "market_phase": "growth",
+            "data_confidence": 1.0,
+            "market_opportunity_score": 0.6,
+            "unmet_need_score": 0.5,
+            "opportunity_label": null,
+            "prevalence_adjustment": 1.0,
+            "status": "success",
+            "timestamp": "2026-03-04T13:26:26.417696+00:00"
+          },
+          "regulatory": {
+            "drug_name": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "recommended_pathway": "505(b)(2)",
+            "estimated_timeline_years": 3.5,
+            "key_requirements": [
+              "Bridge to existing safety database via literature/own studies",
+              "At least one adequate & well-controlled efficacy study",
+              "Differential labeling to distinguish from approved drug"
+            ],
+            "orphan_eligible": false,
+            "priority_review_voucher_eligible": false,
+            "breakthrough_eligible": false,
+            "fast_track_eligible": false,
+            "estimated_development_cost_usd": 50000000,
+            "regulatory_precedents": [
+              "Precedent: Nuplazid (pimavanserin) - New indication for Parkinson psychosis",
+              "Precedent: Epidiolex (cannabidiol) - Repurposed for rare epilepsy"
+            ],
+            "key_risks": [],
+            "recommendation_rationale": "Recommended pathway: 505(b)(2). Estimated timeline: 3.5 years from IND. Estimated cost: $50M.",
+            "timestamp": "2026-03-04T13:26:26.433699+00:00"
+          },
+          "exim": {
+            "drug_name": "ibuprofen",
+            "api_manufacturing_countries": [
+              "India",
+              "China",
+              "USA",
+              "European Union"
+            ],
+            "import_dependency_risk": "MEDIUM",
+            "estimated_cogs_per_unit": 0.0,
+            "supply_chain_risk": "MEDIUM",
+            "formulation_complexity": "MODERATE",
+            "manufacturing_note": "Assessment error: 'DrugProfile' object has no attribute 'get'",
+            "key_suppliers": [],
+            "trade_barriers": [],
+            "export_markets": [],
+            "manufacturing_scalability": "MODERATE",
+            "cmc_challenges": [],
+            "estimated_setup_cost_usd": null,
+            "timestamp": "2026-03-04T13:26:26.445792+00:00"
+          },
+          "biomarker": {
+            "drug_name": "ibuprofen",
+            "indication": "Patent ductus arteriosus",
+            "biomarker_hypothesis": "No established pharmacogenomic biomarkers identified for ibuprofen. Consider exploratory analysis of drug metabolism and target pathway genes.",
+            "target_population": "General population without genetic stratification",
+            "pharmacogenomic_variants": [],
+            "stratification_confidence": "LOW",
+            "key_genes": [],
+            "dosing_implications": [
+              "No specific genetic dose adjustments identified"
+            ],
+            "companion_diagnostic_potential": false,
+            "genetic_testing_recommendation": "Genetic testing not required based on current evidence.",
+            "estimated_responder_rate": null,
+            "population_enrichment_strategy": "No genetic enrichment strategy available.",
+            "timestamp": "2026-03-04T13:26:26.454987+00:00",
+            "error": null
+          }
+        },
+        "early_exit": false,
+        "exit_reason": null,
+        "composite_score": 0.5386249999999999,
+        "confidence": 0.5020833333333333,
+        "explanation": "The hypothesis suggests repurposing ibuprofen for the treatment of patent ductus arteriosus (PDA) with a composite score of 0.54, categorizing it as a Tier 2 plausible hypothesis. The key strength lies in ibuprofen's moderate safety profile, which is a significant advantage in treating PDA. However, concerns arise from the weak market potential and lack of molecular rationale and regulatory path evidence. Overall, the recommendation is to further investigate this hypothesis, considering the moderate safety profile as a promising starting point."
+      },
+      {
+        "indication": "ankylosing spondylitis",
+        "mechanistic_score": 0.789,
+        "linking_targets": [
+          "PTGS2"
+        ],
+        "tier": "insufficient_evidence",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "overlap_score": 1.0,
+            "overlapping_targets": [
+              "PTGS1",
+              "PTGS2"
+            ],
+            "drug_targets": [
+              "PTGS1",
+              "PTGS2"
+            ],
+            "disease_genes": [
+              "TNF",
+              "PTGS2",
+              "PTGS1",
+              "IL17A",
+              "NR3C1",
+              "ERAP1",
+              "IL23R",
+              "ATP4A",
+              "JAK2",
+              "IL6R",
+              "TNFRSF1A",
+              "GPR35",
+              "NKX2-3",
+              "INAVA",
+              "RUNX3",
+              "GPR65",
+              "PTPN22",
+              "TNFSF15",
+              "TYK2",
+              "ATG16L1",
+              "ENO4",
+              "JAK1",
+              "TNRC18",
+              "JAK3",
+              "FCGR2A",
+              "IL17F",
+              "PPARD",
+              "IL10",
+              "IFNGR2",
+              "CD6",
+              "BACH2",
+              "TLR4",
+              "ADGRL2",
+              "PRKCB",
+              "SMAD3",
+              "CD40",
+              "PARK7",
+              "IL2RA",
+              "TCP11",
+              "UBASH3A",
+              "CCL21",
+              "FSCN1",
+              "TNFAIP3",
+              "USP8",
+              "DMRT2",
+              "IRF5",
+              "NOD2",
+              "FRG2C",
+              "CARD9",
+              "LMO4"
+            ],
+            "pathways": [
+              "Requires Reactome/KEGG enrichment"
+            ],
+            "mechanistic_plausibility": "high",
+            "gate_passed": true,
+            "gate_rejection_reason": null,
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {
+              "PTGS1": "unknown",
+              "PTGS2": "unknown"
+            },
+            "timestamp": "2026-03-04T13:26:29.325979+00:00",
+            "summary": "Ibuprofen shows high mechanistic plausibility for ankylosing spondylitis (overlap score: 1.000). Shared targets: PTGS1, PTGS2. Pathways: Requires Reactome/KEGG enrichment.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.08
+          },
+          "patent": {
+            "agent": "patent_agent",
+            "drug": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "patents_found": 0,
+            "fto_report": {
+              "report_id": "571be91d-db1d-466e-96b6-7ba81f8b380d",
+              "drug_name": "ibuprofen",
+              "indication": "ankylosing spondylitis",
+              "overall_fto_status": "green",
+              "blocking_patents": [],
+              "caution_patents": [],
+              "clear_patents": [],
+              "total_patents_analyzed": 0,
+              "risk_summary": "LOW RISK: All 0 patent(s) analyzed show no blocking claims.",
+              "recommendations": [],
+              "hard_veto": false,
+              "hard_veto_reason": null,
+              "blocking_patent_expiry_date": null,
+              "gate_passed": true,
+              "created_at": "2026-03-04T13:26:40.407016"
+            },
+            "patents": [],
+            "blocking_patents": [],
+            "status": "partial",
+            "timestamp": "2026-03-04T13:26:40.407016"
+          },
+          "literature": {
+            "agent": "literature_agent",
+            "drug": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "papers_found": 8,
+            "publication_count": 8,
+            "papers": [
+              {
+                "record_id": "2cba8b68-bf61-4ea0-8772-d7cffc2fcd12",
+                "metadata": {
+                  "paper_id": "41086273",
+                  "pmid": "41086273",
+                  "doi": "10.4317/medoral.27543",
+                  "title": "Analgesic efficacy of meloxicam vs ibuprofen on pain after third molar surgery in adult patients. A randomized controlled clinical trial.",
+                  "authors": [
+                    "Falcón-Perez R",
+                    "Pradenas-Loaiza V",
+                    "Bertrán-Delgado C",
+                    "Aguilera F",
+                    "Kunstmann-Camino J."
+                  ],
+                  "abstract": "<h4>Background</h4>This randomized clinical trial was designed to evaluate the postoperative analgesic efficacy of ibuprofen compared to meloxicam in patients undergoing third molar extraction.<h4>Material and methods</h4>Sixty-eight patients who had been indicated for the extraction of both a maxillary (semi-erupted or fully erupted crown) and mandibular third molar (Class I, Position A, and Class I, Position B, according to Pell and Gregory's classification) were randomly assigned to receive either meloxicam (7.5 mg every 12 hours, n = 34) or ibuprofen (400 mg every 8 hours, n = 34) following a single surgical procedure. Postoperative pain intensity was assessed using a Visual Analog Scale (VAS). All outcome measures were recorded during the first seven consecutive postoperative hours, and subsequently at 24, 48, and 72 hours. Addition, the presence or absence of adverse effects was recorded.<h4>Results</h4>In this clinical trial, a total of 68 patients (mean age 24.7 years) completed the study in this clinical trial, and no patients were lost to follow-up. The results showed lower pain intensity in the ibuprofen-treated group at all evaluated time points, except at 72 hours; however, statistically significant differences were observed only at the 2-hour mark (p < 0.05). Both groups exhibited a sustained decrease in pain from 24 hours postoperatively onward (VAS < 2). Only two cases of mild dizziness were reported in the ibuprofen group.<h4>Conclusions</h4>These findings suggest that both therapeutic regimens are effective and well-tolerated options for postoperative pain management in third molar extraction.",
+                  "journal": "",
+                  "publication_date": "2026-01-01",
+                  "url": "https://doi.org/10.4317/medoral.27543",
+                  "source": "europepmc"
+                },
+                "full_text": "<h4>Background</h4>This randomized clinical trial was designed to evaluate the postoperative analgesic efficacy of ibuprofen compared to meloxicam in patients undergoing third molar extraction.<h4>Material and methods</h4>Sixty-eight patients who had been indicated for the extraction of both a maxillary (semi-erupted or fully erupted crown) and mandibular third molar (Class I, Position A, and Class I, Position B, according to Pell and Gregory's classification) were randomly assigned to receive e",
+                "sentences_count": 13,
+                "entities": [],
+                "relations": [],
+                "claims": [
+                  {
+                    "claim_id": "43ae54c8-8fdc-46b5-9ccc-ba4d16f5eecb",
+                    "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [],
+                    "relations": [],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  },
+                  {
+                    "claim_id": "1d6d805d-d876-48fa-bd51-96c2a247ccd3",
+                    "text": "Study of ibuprofen in ankylosing spondylitis patients: p-value = 0.05",
+                    "evidence_type": "efficacy",
+                    "sentence_index": 1,
+                    "entities": [],
+                    "relations": [],
+                    "quantitative_results": [
+                      {
+                        "result_id": "30bc25f6-353e-4583-99b0-32892d22d22e",
+                        "metric": "p_value",
+                        "value": 0.05,
+                        "unit": null,
+                        "interpretation": "p-value = 0.05"
+                      }
+                    ],
+                    "confidence_score": 0.8
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:26:52.560620",
+                "last_updated": "2026-03-04T13:26:52.560620"
+              },
+              {
+                "record_id": "9f5dbed4-e75b-4953-a694-4af8cedd3122",
+                "metadata": {
+                  "paper_id": "40718480",
+                  "pmid": "40718480",
+                  "doi": "10.3389/fimmu.2025.1613502",
+                  "title": "Breaking boundaries in ankylosing spondylitis: how innovative cell therapies reshape immunity, drive cutting-edge advances, and face future challenges.",
+                  "authors": [
+                    "Ke M",
+                    "Liu W",
+                    "Lu H",
+                    "Pan X",
+                    "Wu M",
+                    "Qi N",
+                    "Wang Z",
+                    "Wu Y",
+                    "Zhang F."
+                  ],
+                  "abstract": "Ankylosing spondylitis (AS) is a chronic autoimmune inflammatory disease primarily affecting the axial skeleton, characterized by joint erosion and ankylosis. AS significantly impacts quality of life, work capacity and mental health through chronic pain, stiffness and functional decline. Its pathogenesis is multifactorial, involving genetic predispositions, immunological dysregulation and environmental triggers. Current treatments, including nonsteroidal anti-inflammatory drugs and immunosuppressive agents, offer limited symptomatic relief and fail to improve long-term prognosis due to efficacy limitations and side effects. Recent advances in cell therapy, particularly mesenchymal stem cells (MSCs) and chimeric antigen receptor (CAR) T-cell therapy, demonstrate promise in addressing these limitations by providing immunomodulatory, anti-inflammatory and regenerative benefits. This review summarizes the pathogenesis of AS, the limitations of existing treatments and the clinical progress of MSC therapy, while exploring the potential of emerging CAR-based therapies.",
+                  "journal": "",
+                  "publication_date": "2025-07-11",
+                  "url": "https://doi.org/10.3389/fimmu.2025.1613502",
+                  "source": "europepmc"
+                },
+                "full_text": "Ankylosing spondylitis (AS) is a chronic autoimmune inflammatory disease primarily affecting the axial skeleton, characterized by joint erosion and ankylosis. AS significantly impacts quality of life, work capacity and mental health through chronic pain, stiffness and functional decline. Its pathogenesis is multifactorial, involving genetic predispositions, immunological dysregulation and environmental triggers. Current treatments, including nonsteroidal anti-inflammatory drugs and immunosuppres",
+                "sentences_count": 6,
+                "entities": [
+                  {
+                    "entity_id": "aacc1a8b-a3e9-45b8-9f28-e528c7ed64cd",
+                    "text": "Ankylosing spondylitis",
+                    "entity_type": "disease",
+                    "normalized_name": "ankylosing spondylitis",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "0d5fe14b-4dd6-4525-821d-9e1a1c51a70b",
+                    "text": "AS",
+                    "entity_type": "disease",
+                    "normalized_name": "as",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "text": "nonsteroidal anti-inflammatory drugs",
+                    "entity_type": "drug",
+                    "normalized_name": "nonsteroidal anti-inflammatory drugs",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "text": "immunosuppressive agents",
+                    "entity_type": "drug",
+                    "normalized_name": "immunosuppressive agents",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "3b3c5a63-10fc-41f5-bd52-89822910d11a",
+                    "text": "mesenchymal stem cells",
+                    "entity_type": "protein",
+                    "normalized_name": "mesenchymal stem cells",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "69cfcbc0-b563-405b-a051-862996f69b90",
+                    "text": "MSCs",
+                    "entity_type": "protein",
+                    "normalized_name": "mscs",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "fa0d5840-0c67-4816-ad1d-c3b9969ffc72",
+                    "text": "chimeric antigen receptor",
+                    "entity_type": "protein",
+                    "normalized_name": "chimeric antigen receptor",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "84b1c711-37e1-4fb8-8eb6-fceeb3edf6c3",
+                    "text": "CAR",
+                    "entity_type": "protein",
+                    "normalized_name": "car",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "39b771e1-35ab-46bb-9a9a-a4d3834201d8",
+                    "text": "T-cell",
+                    "entity_type": "protein",
+                    "normalized_name": "t-cell",
+                    "confidence": 0.85
+                  }
+                ],
+                "relations": [
+                  {
+                    "relation_id": "b037d21a-8829-466b-8ef7-b07cfe583737",
+                    "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "entity2_id": "3b3c5a63-10fc-41f5-bd52-89822910d11a",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "3f99a759-df9a-4529-88bd-1a515f2aae44",
+                    "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "entity2_id": "69cfcbc0-b563-405b-a051-862996f69b90",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "ffc2424d-e50f-420c-b2b8-b0b22090d590",
+                    "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "entity2_id": "fa0d5840-0c67-4816-ad1d-c3b9969ffc72",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "d2f51328-93da-4276-9fc6-475e509df79a",
+                    "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "entity2_id": "84b1c711-37e1-4fb8-8eb6-fceeb3edf6c3",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "e1ba6b5e-1931-4936-9e0d-43dfd4277ed0",
+                    "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                    "entity2_id": "39b771e1-35ab-46bb-9a9a-a4d3834201d8",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "0eccf211-57b0-4b2c-a315-6efdf0a7729a",
+                    "entity1_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "entity2_id": "3b3c5a63-10fc-41f5-bd52-89822910d11a",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "3b0db155-1d8d-4d02-9a0e-6fdf6a19278b",
+                    "entity1_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "entity2_id": "69cfcbc0-b563-405b-a051-862996f69b90",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "efd3d9c7-28e8-426f-b826-fe0c5b7f0475",
+                    "entity1_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "entity2_id": "fa0d5840-0c67-4816-ad1d-c3b9969ffc72",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "2064a4cb-bdd6-40f1-9664-1842bb1a4310",
+                    "entity1_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "entity2_id": "84b1c711-37e1-4fb8-8eb6-fceeb3edf6c3",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "23e0d407-9ece-4461-a65d-73cc41738568",
+                    "entity1_id": "2ddf8fc6-8104-4ffe-980a-ba2150d33b5e",
+                    "entity2_id": "39b771e1-35ab-46bb-9a9a-a4d3834201d8",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  }
+                ],
+                "claims": [
+                  {
+                    "claim_id": "c0a20736-46fb-47f7-80af-0b7ff6d40500",
+                    "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [
+                      {
+                        "entity_id": "aacc1a8b-a3e9-45b8-9f28-e528c7ed64cd",
+                        "text": "Ankylosing spondylitis",
+                        "entity_type": "disease",
+                        "normalized_name": "ankylosing spondylitis",
+                        "confidence": 0.85
+                      },
+                      {
+                        "entity_id": "0d5fe14b-4dd6-4525-821d-9e1a1c51a70b",
+                        "text": "AS",
+                        "entity_type": "disease",
+                        "normalized_name": "as",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "relations": [
+                      {
+                        "relation_id": "b037d21a-8829-466b-8ef7-b07cfe583737",
+                        "entity1_id": "b1277229-eb7d-425a-9cd8-83dfc4cb53bd",
+                        "entity2_id": "3b3c5a63-10fc-41f5-bd52-89822910d11a",
+                        "relation_type": "targets_pathway",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:26:53.530122",
+                "last_updated": "2026-03-04T13:26:53.530122"
+              },
+              {
+                "record_id": "81e9b5bc-2dff-424d-94ca-94d63a368258",
+                "metadata": {
+                  "paper_id": "40283653",
+                  "pmid": "40283653",
+                  "doi": "10.3390/jcm14082823",
+                  "title": "Trends in Celecoxib Prescribing: A Single Institution 16-Month Review.",
+                  "authors": [
+                    "Cerda IH",
+                    "Jung H",
+                    "Guerrero MC",
+                    "Diez Tafur R",
+                    "Yong RJ",
+                    "Robinson CL",
+                    "Hasoon JJ."
+                  ],
+                  "abstract": "<b>Background/Objectives:</b> Celecoxib, a COX-2 selective nonsteroidal anti-inflammatory drug (NSAID), is widely prescribed for pain management due to its efficacy and improved gastrointestinal safety profile compared to traditional NSAIDs. Understanding prescription trends and their comparison to other NSAIDs provides valuable insight into prescribing behaviors in clinical settings. <b>Methods:</b> This retrospective study analyzed celecoxib prescriptions written by three pain management physicians in a single institution over a 16-month period from 1 January 2023 to 30 April 2024. Prescription data were collected and grouped into four 4-month intervals to assess temporal trends. Additionally, we compared celecoxib prescriptions to other commonly prescribed NSAIDs, including ibuprofen, meloxicam, naproxen, and diclofenac. <b>Results:</b> A total of 143 celecoxib prescriptions were identified during the study period, with a steady increase observed across consecutive intervals: 8 prescriptions from January-April 2023, 22 from May-August 2023, 46 from September-December 2023, and 67 from January-April 2024. In comparison, a total of 165 prescriptions were written for other NSAIDs over the same period, with 26 prescriptions from January-April 2023, 41 from May-August 2023, 45 from September-December 2023, and 53 from January-April 2024. While prescriptions for both celecoxib and other NSAIDs increased over time, the rate of celecoxib prescriptions showed a steeper rise. <b>Conclusions:</b> The findings demonstrate a notable increase in celecoxib prescriptions in this pain management clinic, outpacing the growth of other NSAIDs. This trend may reflect increasing provider preference for COX-2 selective inhibitors due to their favorable safety profile and efficacy. Further research is warranted to explore the underlying factors driving these prescribing patterns.",
+                  "journal": "",
+                  "publication_date": "2025-04-19",
+                  "url": "https://www.mdpi.com/2077-0383/14/8/2823/pdf?version=1745048581",
+                  "source": "europepmc"
+                },
+                "full_text": "<b>Background/Objectives:</b> Celecoxib, a COX-2 selective nonsteroidal anti-inflammatory drug (NSAID), is widely prescribed for pain management due to its efficacy and improved gastrointestinal safety profile compared to traditional NSAIDs. Understanding prescription trends and their comparison to other NSAIDs provides valuable insight into prescribing behaviors in clinical settings. <b>Methods:</b> This retrospective study analyzed celecoxib prescriptions written by three pain management physi",
+                "sentences_count": 11,
+                "entities": [
+                  {
+                    "entity_id": "a34c9f2f-7302-4ebc-95fc-03e27152a7ea",
+                    "text": "Celecoxib",
+                    "entity_type": "drug",
+                    "normalized_name": "celecoxib",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "text": "COX-2",
+                    "entity_type": "protein",
+                    "normalized_name": "cox-2",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "c3ebac28-c4f4-420b-984a-547d459b6045",
+                    "text": "NSAID",
+                    "entity_type": "drug",
+                    "normalized_name": "nsaid",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "44d2dc9a-e2e9-4e27-b273-bba69d4ee898",
+                    "text": "Ibuprofen",
+                    "entity_type": "drug",
+                    "normalized_name": "ibuprofen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "d3e3ce82-2553-4db3-a978-760bd079ed5a",
+                    "text": "Meloxicam",
+                    "entity_type": "drug",
+                    "normalized_name": "meloxicam",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "e071819e-704f-4fec-8c95-c42da67886ba",
+                    "text": "Naproxen",
+                    "entity_type": "drug",
+                    "normalized_name": "naproxen",
+                    "confidence": 0.85
+                  },
+                  {
+                    "entity_id": "3d046afd-91f9-41dd-9a4a-4d379dd9c235",
+                    "text": "Diclofenac",
+                    "entity_type": "drug",
+                    "normalized_name": "diclofenac",
+                    "confidence": 0.85
+                  }
+                ],
+                "relations": [
+                  {
+                    "relation_id": "6033e991-cfe3-4cf7-9072-1b2834a208e5",
+                    "entity1_id": "a34c9f2f-7302-4ebc-95fc-03e27152a7ea",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "e8bfe26f-5b43-4988-b040-e9de6ceaad40",
+                    "entity1_id": "c3ebac28-c4f4-420b-984a-547d459b6045",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "67c8104c-29d1-4b60-b3be-57ee53edad26",
+                    "entity1_id": "44d2dc9a-e2e9-4e27-b273-bba69d4ee898",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "d91177ff-9f1b-4cd0-966b-26df21548b9f",
+                    "entity1_id": "d3e3ce82-2553-4db3-a978-760bd079ed5a",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "0a58c73a-13ed-4dc3-8e20-ee4357517bb2",
+                    "entity1_id": "e071819e-704f-4fec-8c95-c42da67886ba",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  },
+                  {
+                    "relation_id": "2191f903-9c65-4cb1-a402-58faa46d6f56",
+                    "entity1_id": "3d046afd-91f9-41dd-9a4a-4d379dd9c235",
+                    "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                    "relation_type": "targets_pathway",
+                    "confidence": 0.85
+                  }
+                ],
+                "claims": [
+                  {
+                    "claim_id": "05f4db11-7ef7-416f-959e-895e958528f0",
+                    "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                    "evidence_type": "mechanism",
+                    "sentence_index": 0,
+                    "entities": [
+                      {
+                        "entity_id": "a34c9f2f-7302-4ebc-95fc-03e27152a7ea",
+                        "text": "Celecoxib",
+                        "entity_type": "drug",
+                        "normalized_name": "celecoxib",
+                        "confidence": 0.85
+                      },
+                      {
+                        "entity_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                        "text": "COX-2",
+                        "entity_type": "protein",
+                        "normalized_name": "cox-2",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "relations": [
+                      {
+                        "relation_id": "6033e991-cfe3-4cf7-9072-1b2834a208e5",
+                        "entity1_id": "a34c9f2f-7302-4ebc-95fc-03e27152a7ea",
+                        "entity2_id": "715bdd64-09cd-44a1-a6f6-ff3193550cdc",
+                        "relation_type": "targets_pathway",
+                        "confidence": 0.85
+                      }
+                    ],
+                    "quantitative_results": [],
+                    "confidence_score": 0.85
+                  }
+                ],
+                "embedding_present": true,
+                "created_at": "2026-03-04T13:26:53.899698",
+                "last_updated": "2026-03-04T13:26:53.899698"
+              }
+            ],
+            "total_claims": 9,
+            "evidence_summary": {
+              "drug": "ibuprofen",
+              "indication": "ankylosing spondylitis",
+              "papers_reviewed": 8,
+              "total_claims": 9,
+              "mechanisms": [
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41086273"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40718480"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40283653"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "40786695"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41246047"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41235374"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "41019055"
+                },
+                {
+                  "text": "ibuprofen exhibits therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms.",
+                  "confidence": 0.85,
+                  "source_pmid": "39305453"
+                }
+              ],
+              "efficacy_findings": [
+                {
+                  "text": "Study of ibuprofen in ankylosing spondylitis patients: p-value = 0.05",
+                  "confidence": 0.8,
+                  "results": [
+                    {
+                      "result_id": "30bc25f6-353e-4583-99b0-32892d22d22e",
+                      "metric": "p_value",
+                      "value": 0.05,
+                      "unit": null,
+                      "interpretation": "p-value = 0.05"
+                    }
+                  ],
+                  "source_pmid": "41086273"
+                }
+              ],
+              "safety_concerns": [],
+              "llm_summary": "There is limited direct evidence from the provided literature on the use of ibuprofen to treat ankylosing spondylitis. However, based on the claims and general knowledge, here is a summary:\n\n1. **Mechanisms of action**: Ibuprofen, a nonsteroidal anti-inflammatory drug (NSAID), is believed to exhibit therapeutic potential in ankylosing spondylitis through multiple molecular mechanisms, although the exact mechanisms are not specified in the provided literature.\n\n2. **Clinical efficacy**: The clinical efficacy of ibuprofen in treating ankylosing spondylitis is not directly evaluated in the provided literature. However, one study (Study of ibuprofen in ankylosing spondylitis patients) reported a p-value of 0.05, suggesting a potential benefit of ibuprofen in ankylosing spondylitis patients, although the exact outcome measure is not specified.\n\n3. **Safety considerations**: The safety of ibuprofen in treating ankylosing spondylitis is not explicitly discussed in the provided literature. However, as a nonsteroidal anti-inflammatory drug, ibuprofen is known to have potential gastrointestinal and cardiovascular side effects, which should be considered when prescribing it for patients with ankylosing spondylitis."
+            },
+            "competition_index_score": 0.9,
+            "sentiment_score": 0.8333333333333334,
+            "sentiment_breakdown": {
+              "positive": 5,
+              "negative": 1,
+              "inconclusive": 2
+            },
+            "analysis_window_years": 5,
+            "filtered_out_older_papers": 0,
+            "summary": "Identified 8 papers from last 5 years for ibuprofen in ankylosing spondylitis. Competition index 0.90; sentiment score 0.83. Extracted 9 claims across mechanism, efficacy, and safety.",
+            "status": "success",
+            "timestamp": "2026-03-04T13:27:06.758211"
+          },
+          "safety": {
+            "drug_name": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "safety_score": 0.9,
+            "safety_transfer_score": 0.9,
+            "hard_stop": false,
+            "hard_stop_reason": null,
+            "gate_passed": true,
+            "risk_level": "green",
+            "critical_safety_risk": false,
+            "red_flags": [],
+            "amber_flags": [],
+            "green_flags": [
+              "No boxed warnings or contraindications",
+              "No significant safety signals detected"
+            ],
+            "adverse_events": [
+              {
+                "event_id": "dailymed_label_ibuprofen_0_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Nausea",
+                "meddra_term": "Nausea",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "15%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_1_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Vomiting",
+                "meddra_term": "Vomiting",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "10%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_2_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Abdominal Pain",
+                "meddra_term": "Abdominal Pain",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_3_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Dizziness",
+                "meddra_term": "Dizziness",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_4_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Headache",
+                "meddra_term": "Headache",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "5%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_5_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Rash",
+                "meddra_term": "Rash",
+                "meddra_code": null,
+                "severity": "mild",
+                "frequency": "2%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_6_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Allergic Reaction",
+                "meddra_term": "Allergic Reaction",
+                "meddra_code": null,
+                "severity": "severe",
+                "frequency": "0.1%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              },
+              {
+                "event_id": "dailymed_label_ibuprofen_7_1772630835.558967",
+                "drug_name": "ibuprofen",
+                "ae_term": "Liver Damage",
+                "meddra_term": "Liver Damage",
+                "meddra_code": null,
+                "severity": "severe",
+                "frequency": "0.01%",
+                "source": "dailymed_label",
+                "dose": null,
+                "population": null,
+                "timestamp": "2026-03-04T13:27:15.558967+00:00",
+                "metadata": {
+                  "raw_text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-stylesheet href=\"https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl\" type=\"text/xsl\"?>\n<document xmlns=\"urn:hl7-org:v3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd\">\n   <id root=\"813ac774-fd58-4968-95fb-f9b4442f1621\"/>\n   <code code=\"34390-5\" codeSystem=\"2.16.840.1.113883.6.1\" displayName=\"HUMAN OTC DRUG LABEL\"/>\n   <title>CVS Pharmacy, Inc. Children’s Ibu"
+                }
+              }
+            ],
+            "pk_pd_params": [
+              {
+                "drug_name": "ibuprofen",
+                "parameter": "Bioavailability",
+                "value": 89.0,
+                "unit": "%",
+                "dose": null,
+                "population": null,
+                "source": "dailymed_label",
+                "metadata": {
+                  "extraction_method": "llm"
+                }
+              },
+              {
+                "drug_name": "ibuprofen",
+                "parameter": "Protein binding",
+                "value": 99.0,
+                "unit": "%",
+                "dose": null,
+                "population": null,
+                "source": "dailymed_label",
+                "metadata": {
+                  "extraction_method": "llm"
+                }
+              }
+            ],
+            "signals": [],
+            "boxed_warnings": [],
+            "contraindications": [],
+            "dose_limiting_toxicities": [],
+            "summary": "**Safety Assessment Summary: Ibuprofen for Ankylosing Spondylitis**\n\nIbuprofen has demonstrated a favorable safety profile for the treatment of ankylosing spondylitis, with a high safety score of 0.90/1.0 and no red flags or amber flags identified. The low total adverse events (8) and absence of safety signals suggest minimal risk of major safety concerns. The overall risk-benefit outlook for repurposing ibuprofen in ankylosing spondylitis appears favorable, with a strong indication that the benefits of treatment outweigh potential risks.",
+            "evidence_items": [
+              {
+                "source": "clinicaltrials",
+                "id": "NCT01938144",
+                "title": "Evaluation of the Efficacy and Safety of Two Ibuprofen Combination Products for the Treatment of the Common Cold and Flu in Latin America",
+                "url": "https://clinicaltrials.gov/study/NCT01938144"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT06342830",
+                "title": "Comparing the Effect of Different Intracanal Dressing on Failed Root Canal Treated Cases on Periapical Healing",
+                "url": "https://clinicaltrials.gov/study/NCT06342830"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05632133",
+                "title": "The Lacosamide's Effect on Calcitonin Gene-related Peptide in Migraine Patients",
+                "url": "https://clinicaltrials.gov/study/NCT05632133"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05676892",
+                "title": "Effects of Intravenous Ibuprofen on Acute Pain After Laparoscopic Cholecystectomy",
+                "url": "https://clinicaltrials.gov/study/NCT05676892"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04899401",
+                "title": "Trial To Assess Efficacy and Safety of PediaFlu® in Children With Acute Tonsillopharyngitis / Rhinopharyngitis",
+                "url": "https://clinicaltrials.gov/study/NCT04899401"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04444830",
+                "title": "Sprix for Postoperative Pain Control Following Gynecologic Surgery",
+                "url": "https://clinicaltrials.gov/study/NCT04444830"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT04575519",
+                "title": "Adjunctive Acetylsalicylic Acid and Ibuprofen for Tuberculosis",
+                "url": "https://clinicaltrials.gov/study/NCT04575519"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT07102641",
+                "title": "Post-cesarean Analgesia: Comparing Effectiveness of Staggered v. Simultaneous Therapies",
+                "url": "https://clinicaltrials.gov/study/NCT07102641"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT05586373",
+                "title": "Ibuprofen vs Dipyrone After C-section in Preeclampsia",
+                "url": "https://clinicaltrials.gov/study/NCT05586373"
+              },
+              {
+                "source": "clinicaltrials",
+                "id": "NCT06923540",
+                "title": "Intravenous Acetaminophen to Reduce Post-operative Opioid Consumption",
+                "url": "https://clinicaltrials.gov/study/NCT06923540"
+              },
+              {
+                "source": "dailymed",
+                "title": "ibuprofen Label",
+                "boxed_warnings": 0,
+                "contraindications": 0
+              }
+            ],
+            "timestamp": "2026-03-04T13:27:26.690706+00:00"
+          },
+          "clinical": {
+            "agent": "clinical_agent",
+            "drug": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "trial_count": 1,
+            "trials_found": 1,
+            "trials": [
+              {
+                "trial_id": "NCT02293681",
+                "registry_name": "clinicaltrials.gov",
+                "source_url": "https://clinicaltrials.gov/ct2/show/NCT02293681",
+                "drug_names": [
+                  "ibuprofen"
+                ],
+                "indication": "ankylosing spondylitis",
+                "phase": "N/A",
+                "status": "Unknown",
+                "enrollment": null,
+                "completion_date": null,
+                "start_date": null,
+                "why_stopped": null,
+                "why_stopped_reason": null,
+                "dose": null,
+                "route": null,
+                "duration": null,
+                "primary_outcomes": [
+                  {
+                    "outcome_id": "978b4652-ee73-4570-8871-2d5e7d169526",
+                    "outcome_type": "primary",
+                    "measure": "Clinical efficacy of ibuprofen in ankylosing spondylitis",
+                    "description": "Primary efficacy measure based on disease-specific assessment",
+                    "time_frame": "12 weeks",
+                    "result_summary": "Statistically significant improvement vs placebo (p<0.05)"
+                  }
+                ],
+                "secondary_outcomes": [
+                  {
+                    "outcome_id": "02f7543a-c71d-47b4-af83-92d1fd7a0d07",
+                    "outcome_type": "secondary",
+                    "measure": "Quality of life score",
+                    "description": "Change in SF-36 quality of life assessment",
+                    "time_frame": "12 weeks",
+                    "result_summary": "Mean improvement of 12.5 points vs 3.2 points placebo"
+                  }
+                ],
+                "safety_signals": [
+                  {
+                    "signal_id": "d58d233a-cce5-4d37-87e5-16656b5b1ccd",
+                    "ae_term": "Gastrointestinal hemorrhage",
+                    "frequency": "2.1%",
+                    "severity": "severe",
+                    "outcome": "Managed with supportive care"
+                  },
+                  {
+                    "signal_id": "33653639-e487-4a48-929e-581226f1ba67",
+                    "ae_term": "Dyspepsia",
+                    "frequency": "8.5%",
+                    "severity": "mild",
+                    "outcome": "Recovered"
+                  },
+                  {
+                    "signal_id": "90849e84-4381-4e80-9e38-b29dbd79d7b5",
+                    "ae_term": "Elevated liver enzymes",
+                    "frequency": "3.2%",
+                    "severity": "moderate",
+                    "outcome": "Resolved upon discontinuation"
+                  }
+                ],
+                "sponsor": null,
+                "locations": [],
+                "publications": [],
+                "created_at": "2026-03-04T13:27:28.134703",
+                "last_updated": "2026-03-04T13:27:28.134703",
+                "status_weight": 1.0
+              }
+            ],
+            "failed_trials": [],
+            "dosing_data": [],
+            "evidence_items": [
+              {
+                "summary_id": "b79359fe-5231-4a98-bbdd-752a09a277f1",
+                "trial_id": "NCT02293681",
+                "evidence_type": "efficacy",
+                "summary_text": "Ibuprofen has been shown to be effective in reducing symptoms of ankylosing spondylitis, with statistically significant improvements compared to placebo in clinical trials. This nonsteroidal anti-inflammatory drug (NSAID) has demonstrated its efficacy in alleviating pain and improving functional capacity in patients with this inflammatory condition.",
+                "confidence_score": 0.85,
+                "excerpt": "Primary Outcome: Clinical efficacy of ibuprofen in ankylosing spondylitis",
+                "excerpt_source": "https://clinicaltrials.gov/ct2/show/NCT02293681",
+                "created_at": "2026-03-04T13:27:32.875447"
+              }
+            ],
+            "summary": "Identified 1 clinical trials for ibuprofen in ankylosing spondylitis. Generated 1 evidence items. 0 failed trials identified as repurposing opportunities. 0 trials with dosing data.",
+            "status": "success",
+            "timestamp": "2026-03-04T13:27:32.875447+00:00"
+          },
+          "market": {
+            "agent": "market_agent",
+            "drug": "Advil, Motrin, Nuprin, others",
+            "indication": "Ankylosing spondylitis",
+            "market_snapshot": {
+              "snapshot_id": "15dd64af-3fa7-40aa-8fb0-b7c208e9b99a",
+              "drug_name": "Advil, Motrin, Nuprin, others",
+              "indication": "Ankylosing spondylitis",
+              "analysis_date": "2026-03-04T13:27:38.494258",
+              "market_phase": "growth",
+              "geography": "US",
+              "tam_estimate": null,
+              "revenue_scenarios": [],
+              "competitors": [],
+              "pricing_benchmarks": [],
+              "payer_signals": [],
+              "market_size_history": [],
+              "go_to_market_risks": [],
+              "market_summary": "The Ankylosing spondylitis market in US represents a TAM of unknown size (no data available). Market is characterized as growth. ",
+              "key_insights": [
+                "Based on the provided market analysis context, here are 3-4 concise business insights for a go-to-market strategy:",
+                "1. **Market Opportunity**: With an unknown TAM and growth market phase, there is a significant opportunity to capture a substantial share of the ankylosing spondylitis treatment market, particularly if a novel or effective drug enters the market. However, understanding the exact size and potential for growth will be crucial to inform strategic decisions.",
+                "2. **Competitive Landscape**: Although there are no direct competitors mentioned, the presence of Advil, Motrin, and Nuprin in the market suggests that the competition may not be completely absent. Therefore, it would be essential to assess the competitive landscape thoroughly to identify potential threats or opportunities.",
+                "3. **Payer Dynamics**: Given that ankylosing spondylitis is a complex and chronic condition, payers may require substantial evidence of the drug's efficacy and safety to approve coverage. Consequently, a comprehensive value proposition and robust clinical program will be necessary to secure favorable formulary placement and reimbursement."
+              ],
+              "data_confidence_score": 1.0,
+              "market_opportunity_score": 0.6,
+              "unmet_need_score": 0.5,
+              "opportunity_label": null,
+              "prevalence_adjustment": 1.0,
+              "created_at": "2026-03-04T13:27:38.494258",
+              "last_updated": "2026-03-04T13:27:38.494258",
+              "embedding_present": true
+            },
+            "tam_estimate": null,
+            "revenue_scenarios": [],
+            "competitors": [],
+            "payer_signals": [],
+            "key_insights": [
+              "Based on the provided market analysis context, here are 3-4 concise business insights for a go-to-market strategy:",
+              "1. **Market Opportunity**: With an unknown TAM and growth market phase, there is a significant opportunity to capture a substantial share of the ankylosing spondylitis treatment market, particularly if a novel or effective drug enters the market. However, understanding the exact size and potential for growth will be crucial to inform strategic decisions.",
+              "2. **Competitive Landscape**: Although there are no direct competitors mentioned, the presence of Advil, Motrin, and Nuprin in the market suggests that the competition may not be completely absent. Therefore, it would be essential to assess the competitive landscape thoroughly to identify potential threats or opportunities.",
+              "3. **Payer Dynamics**: Given that ankylosing spondylitis is a complex and chronic condition, payers may require substantial evidence of the drug's efficacy and safety to approve coverage. Consequently, a comprehensive value proposition and robust clinical program will be necessary to secure favorable formulary placement and reimbursement."
+            ],
+            "go_to_market_risks": [],
+            "market_phase": "growth",
+            "data_confidence": 1.0,
+            "market_opportunity_score": 0.6,
+            "unmet_need_score": 0.5,
+            "opportunity_label": null,
+            "prevalence_adjustment": 1.0,
+            "status": "success",
+            "timestamp": "2026-03-04T13:27:41.422987+00:00"
+          },
+          "regulatory": {
+            "drug_name": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "recommended_pathway": "505(b)(2)",
+            "estimated_timeline_years": 3.5,
+            "key_requirements": [
+              "Bridge to existing safety database via literature/own studies",
+              "At least one adequate & well-controlled efficacy study",
+              "Differential labeling to distinguish from approved drug"
+            ],
+            "orphan_eligible": false,
+            "priority_review_voucher_eligible": false,
+            "breakthrough_eligible": false,
+            "fast_track_eligible": false,
+            "estimated_development_cost_usd": 50000000,
+            "regulatory_precedents": [
+              "Precedent: Nuplazid (pimavanserin) - New indication for Parkinson psychosis",
+              "Precedent: Epidiolex (cannabidiol) - Repurposed for rare epilepsy"
+            ],
+            "key_risks": [],
+            "recommendation_rationale": "Recommended pathway: 505(b)(2). Estimated timeline: 3.5 years from IND. Estimated cost: $50M.",
+            "timestamp": "2026-03-04T13:27:41.422987+00:00"
+          },
+          "exim": {
+            "drug_name": "ibuprofen",
+            "api_manufacturing_countries": [
+              "India",
+              "China",
+              "USA",
+              "European Union"
+            ],
+            "import_dependency_risk": "MEDIUM",
+            "estimated_cogs_per_unit": 0.0,
+            "supply_chain_risk": "MEDIUM",
+            "formulation_complexity": "MODERATE",
+            "manufacturing_note": "Assessment error: 'DrugProfile' object has no attribute 'get'",
+            "key_suppliers": [],
+            "trade_barriers": [],
+            "export_markets": [],
+            "manufacturing_scalability": "MODERATE",
+            "cmc_challenges": [],
+            "estimated_setup_cost_usd": null,
+            "timestamp": "2026-03-04T13:27:41.424987+00:00"
+          },
+          "biomarker": {
+            "drug_name": "ibuprofen",
+            "indication": "ankylosing spondylitis",
+            "biomarker_hypothesis": "No established pharmacogenomic biomarkers identified for ibuprofen. Consider exploratory analysis of drug metabolism and target pathway genes.",
+            "target_population": "General population without genetic stratification",
+            "pharmacogenomic_variants": [],
+            "stratification_confidence": "LOW",
+            "key_genes": [],
+            "dosing_implications": [
+              "No specific genetic dose adjustments identified"
+            ],
+            "companion_diagnostic_potential": false,
+            "genetic_testing_recommendation": "Genetic testing not required based on current evidence.",
+            "estimated_responder_rate": null,
+            "population_enrichment_strategy": "No genetic enrichment strategy available.",
+            "timestamp": "2026-03-04T13:27:41.426073+00:00",
+            "error": null
+          }
+        },
+        "early_exit": false,
+        "exit_reason": null,
+        "composite_score": 0.5011249999999999,
+        "confidence": 0.46541666666666665,
+        "explanation": "The hypothesis suggests repurposing ibuprofen for ankylosing spondylitis, but the composite score of 0.50 indicates insufficient evidence to support this decision. The key strength lies in the moderate clinical evidence, with a score of 0.61, which suggests some supporting studies exist. However, the lack of molecular rationale, regulatory path, and weak market potential are significant concerns, weighing down the overall score. As a result, the recommendation is to reject this hypothesis due to insufficient evidence."
+      },
+      {
+        "indication": "inflammation",
+        "mechanistic_score": 0.779,
+        "linking_targets": [
+          "PTGS2"
+        ],
+        "tier": "BASELINE_APPROVED",
+        "gate_results": {},
+        "agent_results": {},
+        "early_exit": true,
+        "exit_reason": "FDA-approved for this indication (approved 1974)",
+        "composite_score": 0.95,
+        "confidence": 0.99,
+        "baseline_validation": true,
+        "approval_info": {
+          "approval_year": 1974,
+          "trade_name": "Motrin",
+          "sponsor": "Boots",
+          "mechanism": "COX-1/COX-2 inhibitor",
+          "baseline_case": true
+        },
+        "explanation": "✅ BASELINE VALIDATION: ibuprofen is FDA-approved for inflammation (approved 1974). This is NOT a drug repurposing candidate - it's the approved indication. Mechanism: COX-1/COX-2 inhibitor. Repurposing pipeline skipped as this serves as a positive control baseline."
+      }
+    ]
+  }
+}

@@ -1,0 +1,308 @@
+{
+  "success": true,
+  "data": {
+    "drug_name": "minoxidil",
+    "chembl_id": "CHEMBL802",
+    "drug_profile": {
+      "chembl_id": "CHEMBL802",
+      "synonyms": [
+        "Women's rogaine",
+        "Prexidil",
+        "Theroxidil",
+        "Loniten",
+        "Minoxidil extra strength (for men)",
+        "NSC-757106",
+        "Tricoxidil",
+        "Mintop",
+        "Rogaine extra strength (for men)",
+        "Normoxidil",
+        "Rogaine (for women)",
+        "Rogaine",
+        "Regaine for women",
+        "Minoximen",
+        "Rogaine (for men)",
+        "U-10858",
+        "Minoxidil (for men)",
+        "Regaine for men",
+        "Men's rogaine",
+        "Minoxidil (for women)",
+        "Alostil",
+        "Pierminox",
+        "U-10,858",
+        "Lonolox",
+        "Riup",
+        "Minodyl",
+        "Alopexil"
+      ],
+      "known_targets": [
+        {
+          "target_chembl_id": "CHEMBL2095198",
+          "target_name": "KCNJ11",
+          "target_name_raw": "Sulfonylurea receptor 2, Kir6.2",
+          "target_gene_symbol": "KCNJ11",
+          "target_type": "PROTEIN COMPLEX",
+          "organism": "Homo sapiens",
+          "action_type": "OPENER",
+          "mechanism_of_action": "Sulfonylurea receptor 2, Kir6.2 opener"
+        }
+      ],
+      "approved_indications": [
+        "Alopecia",
+        "Hypertension"
+      ],
+      "max_phase": "4.0",
+      "mechanism_of_action": "Sulfonylurea receptor 2, Kir6.2 opener",
+      "drug_class": null
+    },
+    "discovery_result": {
+      "candidates_found": 10,
+      "top_candidates": [
+        {
+          "disease_name": "type 2 diabetes mellitus",
+          "mechanistic_score": 1.0,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "nutritional or metabolic disease"
+        },
+        {
+          "disease_name": "hyperinsulinemic hypoglycemia, familial, 2",
+          "mechanistic_score": 1.0,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "endocrine system disease"
+        },
+        {
+          "disease_name": "diabetes mellitus, permanent neonatal 2",
+          "mechanistic_score": 1.0,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "nutritional or metabolic disease"
+        },
+        {
+          "disease_name": "diabetes mellitus",
+          "mechanistic_score": 1.0,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "endocrine system disease"
+        },
+        {
+          "disease_name": "diabetes mellitus, transient neonatal, 3",
+          "mechanistic_score": 0.992,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "endocrine system disease"
+        },
+        {
+          "disease_name": "permanent neonatal diabetes mellitus",
+          "mechanistic_score": 0.89,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "genetic, familial or congenital disease"
+        },
+        {
+          "disease_name": "maturity-onset diabetes of the young type 13",
+          "mechanistic_score": 0.867,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "endocrine system disease"
+        },
+        {
+          "disease_name": "permanent neonatal diabetes mellitus 1",
+          "mechanistic_score": 0.851,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "nutritional or metabolic disease"
+        },
+        {
+          "disease_name": "familial hyperinsulinism",
+          "mechanistic_score": 0.841,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "endocrine system disease"
+        },
+        {
+          "disease_name": "MODY",
+          "mechanistic_score": 0.834,
+          "linking_targets": [
+            "KCNJ11"
+          ],
+          "therapeutic_area": "nutritional or metabolic disease"
+        }
+      ]
+    },
+    "candidates": [
+      {
+        "indication": "type 2 diabetes mellitus",
+        "mechanistic_score": 1.0,
+        "linking_targets": [
+          "KCNJ11"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "minoxidil",
+            "indication": "type 2 diabetes mellitus",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "ABCC8",
+              "KCNJ11",
+              "GCK",
+              "PPARG",
+              "INSR",
+              "HNF1A",
+              "HNF1B",
+              "WFS1",
+              "HNF4A",
+              "GLP1R",
+              "SLC2A2",
+              "AKT2",
+              "GPD2",
+              "SLC30A8",
+              "NDUFS4",
+              "TCF7L2",
+              "PAX4",
+              "NEUROD1",
+              "GIPR",
+              "MT-ND1",
+              "ENPP1",
+              "DPP4",
+              "NDUFS3",
+              "CDKAL1",
+              "SLC5A2",
+              "NDUFB8",
+              "RFX6",
+              "PPARA",
+              "KCNQ1",
+              "NDUFA13",
+              "NDUFB6",
+              "MT-ND6",
+              "NDUFB2",
+              "NDUFA5",
+              "NDUFC2",
+              "NDUFAB1",
+              "MT-ND2",
+              "NDUFAF3",
+              "MT-ND4",
+              "MT-ND4L",
+              "NDUFA10",
+              "MT-ND5",
+              "NDUFA1",
+              "NDUFA2",
+              "NDUFS1",
+              "MT-ND3",
+              "NDUFA12",
+              "NDUFB7",
+              "NDUFV1",
+              "COXFA4"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:32:57.100639+00:00",
+            "summary": "Minoxidil shows low mechanistic plausibility for type 2 diabetes mellitus (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      },
+      {
+        "indication": "hyperinsulinemic hypoglycemia, familial, 2",
+        "mechanistic_score": 1.0,
+        "linking_targets": [
+          "KCNJ11"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "minoxidil",
+            "indication": "hyperinsulinemic hypoglycemia, familial, 2",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "KCNJ11",
+              "HNF4A",
+              "GLUD1",
+              "GCK",
+              "SLC16A1",
+              "SHLD2",
+              "LEPR"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:32:59.625961+00:00",
+            "summary": "Minoxidil shows low mechanistic plausibility for hyperinsulinemic hypoglycemia, familial, 2 (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      },
+      {
+        "indication": "diabetes mellitus, permanent neonatal 2",
+        "mechanistic_score": 1.0,
+        "linking_targets": [
+          "KCNJ11"
+        ],
+        "tier": "REJECT",
+        "gate_results": {},
+        "agent_results": {
+          "molecular": {
+            "drug": "minoxidil",
+            "indication": "diabetes mellitus, permanent neonatal 2",
+            "overlap_score": 0.0,
+            "overlapping_targets": [],
+            "drug_targets": [],
+            "disease_genes": [
+              "KCNJ11"
+            ],
+            "pathways": [],
+            "mechanistic_plausibility": "low",
+            "gate_passed": false,
+            "gate_rejection_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+            "structural_similarity_score": null,
+            "connectivity_map_score": null,
+            "safety_flags": [],
+            "directionality_check": {},
+            "timestamp": "2026-03-04T13:33:02.092411+00:00",
+            "summary": "Minoxidil shows low mechanistic plausibility for diabetes mellitus, permanent neonatal 2 (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+            "method": "open_targets_integration",
+            "overlap_method": "weighted_overlap",
+            "gate_threshold_used": 0.05
+          }
+        },
+        "early_exit": true,
+        "exit_reason": "Insufficient mechanistic overlap: overlap_score 0.000 < threshold 0.050 (threshold set for 0-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+      }
+    ]
+  }
+}

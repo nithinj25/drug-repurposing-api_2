@@ -1,0 +1,369 @@
+﻿{
+    "success":  true,
+    "data":  {
+                 "drug_name":  "metformin",
+                 "chembl_id":  "CHEMBL1431",
+                 "drug_profile":  {
+                                      "chembl_id":  "CHEMBL1431",
+                                      "synonyms":  [
+                                                       "Metformine",
+                                                       "LA-6023",
+                                                       "Metformina",
+                                                       "Metformin extended release"
+                                                   ],
+                                      "known_targets":  [
+                                                            {
+                                                                "target_name":  "PRKAA1",
+                                                                "target_type":  "PROTEIN",
+                                                                "organism":  "Homo sapiens",
+                                                                "action_type":  "ACTIVATOR"
+                                                            },
+                                                            {
+                                                                "target_name":  "PRKAA2",
+                                                                "target_type":  "PROTEIN",
+                                                                "organism":  "Homo sapiens",
+                                                                "action_type":  "ACTIVATOR"
+                                                            }
+                                                        ],
+                                      "approved_indications":  [
+                                                                   "Diabetes Mellitus"
+                                                               ],
+                                      "max_phase":  "4.0",
+                                      "mechanism_of_action":  null,
+                                      "drug_class":  null
+                                  },
+                 "discovery_result":  {
+                                          "candidates_found":  4,
+                                          "top_candidates":  [
+                                                                 {
+                                                                     "disease_name":  "gastric carcinoma",
+                                                                     "mechanistic_score":  0.363,
+                                                                     "linking_targets":  [
+                                                                                             "PRKAA1"
+                                                                                         ],
+                                                                     "therapeutic_area":  "gastrointestinal disease"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "duodenal ulcer",
+                                                                     "mechanistic_score":  0.322,
+                                                                     "linking_targets":  [
+                                                                                             "PRKAA1"
+                                                                                         ],
+                                                                     "therapeutic_area":  "gastrointestinal disease"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "peptic ulcer disease",
+                                                                     "mechanistic_score":  0.317,
+                                                                     "linking_targets":  [
+                                                                                             "PRKAA1"
+                                                                                         ],
+                                                                     "therapeutic_area":  "integumentary system disease"
+                                                                 },
+                                                                 {
+                                                                     "disease_name":  "gastric ulcer",
+                                                                     "mechanistic_score":  0.307,
+                                                                     "linking_targets":  [
+                                                                                             "PRKAA1"
+                                                                                         ],
+                                                                     "therapeutic_area":  "gastrointestinal disease"
+                                                                 }
+                                                             ]
+                                      },
+                 "candidates":  [
+                                    {
+                                        "indication":  "gastric carcinoma",
+                                        "mechanistic_score":  0.363,
+                                        "linking_targets":  [
+                                                                "PRKAA1"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "metformin",
+                                                                                "indication":  "gastric carcinoma",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "AMPK",
+                                                                                                     "PRKAB1"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+                                                                                                      "CDH1",
+                                                                                                      "APC",
+                                                                                                      "TP53",
+                                                                                                      "ARID1A",
+                                                                                                      "FGFR2",
+                                                                                                      "KRAS",
+                                                                                                      "ERBB2",
+                                                                                                      "RHOA",
+                                                                                                      "PIK3CA",
+                                                                                                      "RNF43",
+                                                                                                      "CTNNA1",
+                                                                                                      "ATM",
+                                                                                                      "KMT2D",
+                                                                                                      "ERBB3",
+                                                                                                      "SMAD4",
+                                                                                                      "AR",
+                                                                                                      "UBR5",
+                                                                                                      "TGFBR2",
+                                                                                                      "WRN",
+                                                                                                      "RECQL4",
+                                                                                                      "ACVR2A",
+                                                                                                      "FAT4",
+                                                                                                      "LRP1B",
+                                                                                                      "CDH11",
+                                                                                                      "NTRK3",
+                                                                                                      "ERBB4",
+                                                                                                      "SMARCA4",
+                                                                                                      "NRG1",
+                                                                                                      "BAP1",
+                                                                                                      "PTPRT",
+                                                                                                      "CDKN2A",
+                                                                                                      "TYMS",
+                                                                                                      "KMT2C",
+                                                                                                      "KDM6A",
+                                                                                                      "FLT4",
+                                                                                                      "CACNA1D",
+                                                                                                      "TRRAP",
+                                                                                                      "BCL9",
+                                                                                                      "ETV1",
+                                                                                                      "MSH6",
+                                                                                                      "FGFR1",
+                                                                                                      "PDGFRB",
+                                                                                                      "BAX",
+                                                                                                      "PREX2",
+                                                                                                      "BCL9L",
+                                                                                                      "MYH9",
+                                                                                                      "ATP1A1",
+                                                                                                      "POLE",
+                                                                                                      "BCOR",
+                                                                                                      "AFF3"
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T11:53:19.778302+00:00",
+                                                                                "summary":  "Metformin shows low mechanistic plausibility for gastric carcinoma (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration",
+                                                                                "overlap_method":  "weighted_overlap",
+                                                                                "gate_threshold_used":  0.08
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    },
+                                    {
+                                        "indication":  "duodenal ulcer",
+                                        "mechanistic_score":  0.322,
+                                        "linking_targets":  [
+                                                                "PRKAA1"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "metformin",
+                                                                                "indication":  "duodenal ulcer",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "AMPK",
+                                                                                                     "PRKAB1"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+                                                                                                      "ATP4A",
+                                                                                                      "HRH2",
+                                                                                                      "ABO",
+                                                                                                      "PSCA",
+                                                                                                      "PTGS2",
+                                                                                                      "PTGS1",
+                                                                                                      "PTGER3",
+                                                                                                      "GGT1",
+                                                                                                      "ATP4B",
+                                                                                                      "PLCL2",
+                                                                                                      "URAD",
+                                                                                                      "GNAS",
+                                                                                                      "TPCN2",
+                                                                                                      "NRTN",
+                                                                                                      "ARC",
+                                                                                                      "CNDP2",
+                                                                                                      "ZNF800",
+                                                                                                      "ARF5",
+                                                                                                      "MECOM",
+                                                                                                      "UNC5D",
+                                                                                                      "FUT2",
+                                                                                                      "PRKAA1",
+                                                                                                      "PCED1B",
+                                                                                                      "MBP",
+                                                                                                      "SLC41A3",
+                                                                                                      "PIP4K2A",
+                                                                                                      "SLC17A6",
+                                                                                                      "CXXC4",
+                                                                                                      "MYCT1",
+                                                                                                      "PRICKLE1",
+                                                                                                      "SLC22A3",
+                                                                                                      "PDX1",
+                                                                                                      "TTC33",
+                                                                                                      "LRRC75B",
+                                                                                                      "SUCLG2",
+                                                                                                      "CRTAC1",
+                                                                                                      "GBA3",
+                                                                                                      "OR10A2",
+                                                                                                      "HCRTR1",
+                                                                                                      "MLLT3",
+                                                                                                      "THRB",
+                                                                                                      "OLFM4",
+                                                                                                      "IRX4",
+                                                                                                      "NEK1",
+                                                                                                      "JRK",
+                                                                                                      "GNAQ",
+                                                                                                      "TAFA4",
+                                                                                                      "FOXP1",
+                                                                                                      "LRRC63",
+                                                                                                      "LCP1"
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T11:53:22.383894+00:00",
+                                                                                "summary":  "Metformin shows low mechanistic plausibility for duodenal ulcer (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration",
+                                                                                "overlap_method":  "weighted_overlap",
+                                                                                "gate_threshold_used":  0.08
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    },
+                                    {
+                                        "indication":  "peptic ulcer disease",
+                                        "mechanistic_score":  0.317,
+                                        "linking_targets":  [
+                                                                "PRKAA1"
+                                                            ],
+                                        "tier":  "REJECT",
+                                        "gate_results":  {
+
+                                                         },
+                                        "agent_results":  {
+                                                              "molecular":  {
+                                                                                "drug":  "metformin",
+                                                                                "indication":  "peptic ulcer disease",
+                                                                                "overlap_score":  0.0,
+                                                                                "overlapping_targets":  [
+
+                                                                                                        ],
+                                                                                "drug_targets":  [
+                                                                                                     "AMPK",
+                                                                                                     "PRKAB1"
+                                                                                                 ],
+                                                                                "disease_genes":  [
+                                                                                                      "ATP4A",
+                                                                                                      "HRH2",
+                                                                                                      "PTGS2",
+                                                                                                      "PTGS1",
+                                                                                                      "ABO",
+                                                                                                      "PSCA",
+                                                                                                      "PTGER3",
+                                                                                                      "CHRM3",
+                                                                                                      "CHRM2",
+                                                                                                      "CHRM1",
+                                                                                                      "CHRM4",
+                                                                                                      "CHRM5",
+                                                                                                      "GGT1",
+                                                                                                      "URAD",
+                                                                                                      "PLCL2",
+                                                                                                      "GNAS",
+                                                                                                      "F12",
+                                                                                                      "PRKAA1",
+                                                                                                      "LRRC75B",
+                                                                                                      "FUT2",
+                                                                                                      "ATP4B",
+                                                                                                      "TTC33",
+                                                                                                      "ZNF800",
+                                                                                                      "MECOM",
+                                                                                                      "PDE4B",
+                                                                                                      "SLC22A3",
+                                                                                                      "PDX1",
+                                                                                                      "ARC",
+                                                                                                      "LEP",
+                                                                                                      "RDH14",
+                                                                                                      "TPCN2",
+                                                                                                      "UNC5D",
+                                                                                                      "GPD2",
+                                                                                                      "DPYD",
+                                                                                                      "NRTN",
+                                                                                                      "ARF5",
+                                                                                                      "CNDP2",
+                                                                                                      "MUC5AC",
+                                                                                                      "GRM8",
+                                                                                                      "VPS13B",
+                                                                                                      "LRRC4C",
+                                                                                                      "EFNA5",
+                                                                                                      "CDH9",
+                                                                                                      "TAFA1",
+                                                                                                      "EYA1",
+                                                                                                      "CIBAR2",
+                                                                                                      "PCED1B",
+                                                                                                      "MBP",
+                                                                                                      "NEDD4L",
+                                                                                                      "SLC41A3"
+                                                                                                  ],
+                                                                                "pathways":  [
+
+                                                                                             ],
+                                                                                "mechanistic_plausibility":  "low",
+                                                                                "gate_passed":  false,
+                                                                                "gate_rejection_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate.",
+                                                                                "structural_similarity_score":  null,
+                                                                                "connectivity_map_score":  null,
+                                                                                "safety_flags":  [
+
+                                                                                                 ],
+                                                                                "directionality_check":  {
+
+                                                                                                         },
+                                                                                "timestamp":  "2026-03-04T11:53:24.698508+00:00",
+                                                                                "summary":  "Metformin shows low mechanistic plausibility for peptic ulcer disease (overlap score: 0.000). Shared targets: no overlapping targets. Pathways: unknown pathways.",
+                                                                                "method":  "open_targets_integration",
+                                                                                "overlap_method":  "weighted_overlap",
+                                                                                "gate_threshold_used":  0.08
+                                                                            }
+                                                          },
+                                        "early_exit":  true,
+                                        "exit_reason":  "Insufficient mechanistic overlap: overlap_score 0.000 \u003c threshold 0.080 (threshold set for 2-target drug). Found only 0 shared target(s). GATE DECISION: REJECT - Skip remaining agents for this candidate."
+                                    }
+                                ]
+             }
+}

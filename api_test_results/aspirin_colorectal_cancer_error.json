@@ -1,0 +1,11 @@
+{
+  "test_case": "aspirin_colorectal_cancer",
+  "request": {
+    "drug_name": "aspirin",
+    "indication": "colorectal cancer",
+    "include_patent": true,
+    "use_internal_data": false
+  },
+  "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=120)",
+  "timestamp": "2026-03-03T15:30:19.492387"
+}

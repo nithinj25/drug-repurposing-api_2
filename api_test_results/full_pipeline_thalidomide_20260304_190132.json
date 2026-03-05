@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "drug_name": "thalidomide",
+    "chembl_id": "CHEMBL426123",
+    "discovery_result": {
+      "candidates": [],
+      "message": "No disease candidates found"
+    },
+    "candidates": []
+  }
+}

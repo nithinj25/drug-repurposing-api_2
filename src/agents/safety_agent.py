@@ -106,20 +106,134 @@ class SafetyAssessment:
     drug_name: str
     indication: Optional[str]
     safety_score: float  # 0-1, higher is safer
-    risk_level: str  # green, amber, red
-    critical_safety_risk: bool
-    red_flags: List[str]
-    amber_flags: List[str]
-    green_flags: List[str]
-    adverse_events: List[AdverseEvent]
-    pk_pd_params: List[PKPDParameter]
-    signals: List[SafetySignal]
-    boxed_warnings: List[str]
-    contraindications: List[str]
-    dose_limiting_toxicities: List[str]
-    summary: str
-    evidence_items: List[Dict[str, Any]]
+    safety_transfer_score: Optional[float] = None  # Population-specific transfer score
+    hard_stop: bool = False  # Requires human review
+    hard_stop_reason: Optional[str] = None
+    gate_passed: bool = True  # Stage 3 gate (soft gate - always passes but flags hard_stop)
+    risk_level: str = "green"  # green, amber, red
+    critical_safety_risk: bool = False
+    red_flags: List[str] = field(default_factory=list)
+    amber_flags: List[str] = field(default_factory=list)
+    green_flags: List[str] = field(default_factory=list)
+    adverse_events: List[AdverseEvent] = field(default_factory=list)
+    pk_pd_params: List[PKPDParameter] = field(default_factory=list)
+    signals: List[SafetySignal] = field(default_factory=list)
+    boxed_warnings: List[str] = field(default_factory=list)
+    contraindications: List[str] = field(default_factory=list)
+    dose_limiting_toxicities: List[str] = field(default_factory=list)
+    summary: str = ""
+    evidence_items: List[Dict[str, Any]] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
+
+
+@dataclass
+class PopulationRiskProfile:
+    """
+    Population-specific safety thresholds and risk multipliers.
+    Master Plan Priority #3: Safety is not a property of a drug in isolation.
+    """
+    population_type: str  # "general_adult", "terminal_illness", "elderly", "pediatric", etc.
+    ae_tolerance: str  # "high", "moderate", "low"
+    critical_concerns: List[str]  # What to flag heavily
+    acceptable_aes: List[str]  # What's expected/acceptable
+    risk_multipliers: Dict[str, float]  # AE category -> multiplier
+    
+    @staticmethod
+    def get_profile(population: str) -> "PopulationRiskProfile":
+        """Get population-specific risk profile"""
+        profiles = {
+            "terminal_illness": PopulationRiskProfile(
+                population_type="terminal_illness",
+                ae_tolerance="high",
+                critical_concerns=["infection_without_immunosuppression"],
+                acceptable_aes=["nausea", "fatigue", "hair_loss", "severe_neutropenia"],
+                risk_multipliers={
+                    "severe": 0.3,  # Severe AEs are acceptable
+                    "boxed_warning": 0.5,
+                    "contraindication": 0.7
+                }
+            ),
+            "elderly": PopulationRiskProfile(
+                population_type="elderly",
+                ae_tolerance="low",
+                critical_concerns=["qt_prolongation", "fall_risk", "renal_clearance", "cognitive_impairment"],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "qt_prolongation": 3.0,
+                    "fall_risk": 2.5,
+                    "renal": 2.0,
+                    "severe": 1.5
+                }
+            ),
+            "pediatric": PopulationRiskProfile(
+                population_type="pediatric",
+                ae_tolerance="low",
+                critical_concerns=["developmental_toxicity", "growth_impairment", "weight_based_dosing"],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "teratogenicity": 3.0,
+                    "developmental": 3.0,
+                    "severe": 2.0
+                }
+            ),
+            "women_childbearing": PopulationRiskProfile(
+                population_type="women_childbearing",
+                ae_tolerance="low",
+                critical_concerns=["teratogenicity", "pregnancy_category"],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "teratogenicity": 5.0,  # Absolute veto
+                    "pregnancy_risk": 4.0,
+                    "severe": 1.5
+                }
+            ),
+            "hepatic_impairment": PopulationRiskProfile(
+                population_type="hepatic_impairment",
+                ae_tolerance="low",
+                critical_concerns=["hepatotoxicity", "liver_enzyme_elevation"],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "hepatotoxicity": 5.0,  # Absolute veto
+                    "alt_elevation": 3.0,
+                    "severe": 1.5
+                }
+            ),
+            "cardiac_comorbidities": PopulationRiskProfile(
+                population_type="cardiac_comorbidities",
+                ae_tolerance="low",
+                critical_concerns=["qt_prolongation", "qtc_prolongation", "arrhythmia"],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "qt_prolongation": 5.0,  # Hard stop
+                    "arrhythmia": 4.0,
+                    "severe": 1.5
+                }
+            ),
+            "immunocompromised": PopulationRiskProfile(
+                population_type="immunocompromised",
+                ae_tolerance="moderate",
+                critical_concerns=["opportunistic_infection"],
+                acceptable_aes=["immunosuppression", "infection_risk"],  # Expected
+                risk_multipliers={
+                    "immunosuppression": 0.5,  # Expected, acceptable
+                    "infection": 0.7,
+                    "severe": 1.2
+                }
+            ),
+            "general_adult": PopulationRiskProfile(
+                population_type="general_adult",
+                ae_tolerance="moderate",
+                critical_concerns=[],
+                acceptable_aes=[],
+                risk_multipliers={
+                    "severe": 1.0,
+                    "boxed_warning": 1.0,
+                    "contraindication": 1.0
+                }
+            )
+        }
+        
+        return profiles.get(population, profiles["general_adult"])
 
 
 # ============================================================================
@@ -637,34 +751,75 @@ class SafetyScorer:
         adverse_events: List[AdverseEvent],
         signals: List[SafetySignal],
         boxed_warnings: List[str],
-        contraindications: List[str]
-    ) -> float:
+        contraindications: List[str],
+        population: str = "general_adult"
+    ) -> Tuple[float, bool, Optional[str]]:
         """
-        Compute safety feasibility score (0-1, higher is safer)
+        Compute population-specific safety transfer score (0-1, higher is safer).
+        Master Plan Priority #3: Population-specific thresholds.
         
-        Factors:
-        - Number and severity of AEs
-        - Number of safety signals
-        - Presence of boxed warnings
-        - Presence of contraindications
+        Returns:
+            (safety_transfer_score, hard_stop, hard_stop_reason)
         """
+        profile = PopulationRiskProfile.get_profile(population)
         base_score = 1.0
+        hard_stop = False
+        hard_stop_reason = None
         
-        # Penalize for severe AEs
+        # Check for absolute veto conditions
+        ae_terms_lower = [ae.ae_term.lower() for ae in adverse_events]
+        warning_terms_lower = [w.lower() for w in boxed_warnings]
+        
+        # Cardiac population: QT prolongation = hard stop
+        if population == "cardiac_comorbidities":
+            if any("qt" in term or "qtc" in term for term in ae_terms_lower + warning_terms_lower):
+                hard_stop = True
+                hard_stop_reason = "QT/QTc prolongation detected in cardiac population"
+                return (0.0, hard_stop, hard_stop_reason)
+        
+        # Hepatic impairment: Hepatotoxicity = hard stop
+        if population == "hepatic_impairment":
+            if any("hepat" in term or "liver" in term for term in ae_terms_lower + warning_terms_lower):
+                hard_stop = True
+                hard_stop_reason = "Hepatotoxicity signal in hepatic impairment population"
+                return (0.0, hard_stop, hard_stop_reason)
+        
+        # Women of childbearing age: Teratogenicity = hard stop
+        if population == "women_childbearing":
+            if any("terato" in term or "pregnancy" in term for term in ae_terms_lower + warning_terms_lower):
+                hard_stop = True
+                hard_stop_reason = "Teratogenicity risk in women of childbearing age"
+                return (0.0, hard_stop, hard_stop_reason)
+        
+        # Apply population-specific penalties
         severe_ae_count = sum(1 for ae in adverse_events if ae.severity in ["severe", "life-threatening"])
-        base_score -= min(severe_ae_count * 0.05, 0.3)
+        severe_multiplier = profile.risk_multipliers.get("severe", 1.0)
+        base_score -= min(severe_ae_count * 0.05 * severe_multiplier, 0.4)
         
-        # Penalize for high-confidence signals
+        # High-confidence signals
         high_conf_signals = sum(1 for s in signals if s.confidence > 0.7)
         base_score -= min(high_conf_signals * 0.1, 0.3)
         
-        # Penalize for boxed warnings
-        base_score -= min(len(boxed_warnings) * 0.15, 0.3)
+        # Boxed warnings (population-adjusted)
+        boxed_multiplier = profile.risk_multipliers.get("boxed_warning", 1.0)
+        base_score -= min(len(boxed_warnings) * 0.15 * boxed_multiplier, 0.4)
         
-        # Penalize for contraindications
-        base_score -= min(len(contraindications) * 0.1, 0.2)
+        # Contraindications (population-adjusted)
+        contra_multiplier = profile.risk_multipliers.get("contraindication", 1.0)
+        base_score -= min(len(contraindications) * 0.1 * contra_multiplier, 0.3)
         
-        return max(0.0, min(1.0, base_score))
+        # Apply critical concern penalties
+        for concern in profile.critical_concerns:
+            concern_detected = any(concern.replace("_", " ") in ae.ae_term.lower() for ae in adverse_events)
+            if concern_detected:
+                base_score -= 0.2
+                logger.warning(f"Critical concern detected: {concern} in population {population}")
+        
+        # Boost for terminal illness population (high tolerance)
+        if profile.ae_tolerance == "high":
+            base_score = min(1.0, base_score + 0.2)
+        
+        return (max(0.0, min(1.0, base_score)), hard_stop, hard_stop_reason)
     
     def generate_flags(
         self,
@@ -839,6 +994,7 @@ class SafetyAgent:
         self,
         drug_name: str,
         indication: Optional[str] = None,
+        population: str = "general_adult",
         include_sources: List[str] = None
     ) -> SafetyAssessment:
         """
@@ -925,22 +1081,41 @@ class SafetyAgent:
             dlt_terms = list(set(ae.meddra_term for ae in severe_aes[:5]))
             dose_limiting_toxicities = dlt_terms
         
-        # 4. Compute safety score
-        logger.info("Computing safety feasibility score...")
-        safety_score = self.safety_scorer.compute_safety_score(
+        # 4. Compute safety score (population-specific)
+        logger.info(f"Computing population-specific safety score (population: {population})...")
+        safety_transfer_score, hard_stop, hard_stop_reason = self.safety_scorer.compute_safety_score(
             all_adverse_events,
             signals,
             boxed_warnings,
-            contraindications
+            contraindications,
+            population=population
         )
 
-        # Grade 3+ adverse event veto
+        # Grade 3+ adverse event veto (unless terminal illness population)
         critical_safety_risk, critical_terms = self._detect_grade3_risk(
             all_adverse_events,
             boxed_warnings
         )
-        if critical_safety_risk:
-            safety_score = 0.0
+        if critical_safety_risk and population not in ["terminal_illness", "immunocompromised"]:
+            safety_transfer_score = min(safety_transfer_score, 0.3)
+            logger.warning(f"Critical safety risk detected: {critical_terms}")
+        
+        # ========== STAGE 3 GATE: SAFETY VETO (SOFT GATE) ==========
+        # Unlike Stages 1 & 2 which REJECT/BLOCK, Stage 3 is a "soft gate":
+        # - If hard_stop=True: Log warning, flag as ESCALATE_HUMAN_REVIEW, but CONTINUE pipeline
+        # - Gate always passes (gate_passed=True) since we don't stop evaluation
+        # - Hard stop reasons: black box warnings relevant to patient population
+        gate_passed = True  # Soft gate - always continues
+        if hard_stop:
+            logger.warning(f"⚠️  STAGE 3 SOFT GATE: hard_stop=True for {drug_name} + {indication}")
+            logger.warning(f"    Reason: {hard_stop_reason}")
+            logger.warning(f"    Decision: ESCALATE to human review but CONTINUE pipeline")
+            logger.warning(f"    Population: {population}")
+        else:
+            logger.info(f"✅ Stage 3 GATE PASSED: No population-critical safety concerns for {drug_name} + {indication}")
+        
+        # Use safety_transfer_score as the primary score
+        safety_score = safety_transfer_score
         
         # Determine risk level
         if safety_score >= 0.7:
@@ -981,6 +1156,10 @@ class SafetyAgent:
             drug_name=drug_name,
             indication=indication,
             safety_score=safety_score,
+            safety_transfer_score=safety_transfer_score,
+            hard_stop=hard_stop,
+            hard_stop_reason=hard_stop_reason,
+            gate_passed=gate_passed,
             risk_level=risk_level,
             critical_safety_risk=critical_safety_risk,
             red_flags=red_flags,

@@ -18,6 +18,7 @@ import logging
 import requests
 import json
 import os
+import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 
 # Load environment variables from .env file
@@ -218,47 +219,119 @@ class PubMedConnector(LiteratureSourceConnector):
     def search(self, query: str, drug_name: str, limit: int = 10) -> List[Dict]:
         """Search PubMed"""
         logger.info(f"Searching PubMed for {drug_name}: {self.indication}")
-        
-        # Use stored indication instead of parsing from query
-        indication = self.indication or drug_name
-        
-        # Mock search result (in production: call Entrez API)
-        mock_results = [
-            {
-                "pmid": "36123456",
-                "title": f"Molecular mechanisms of {drug_name} in {indication}",
-                "abstract": f"This study investigates the molecular mechanisms of {drug_name} efficacy in {indication}. "
-                           "We found that the drug targets multiple pathways including protein kinase signaling and mTOR pathway activation. "
-                           "These findings suggest potential therapeutic applications.",
-                "authors": ["Smith J", "Doe A", "Johnson M"],
-                "journal": "Nature Medicine",
-                "pub_date": "2023-06-15",
-                "doi": "10.1038/nm.2023.12345",
-            },
-            {
-                "pmid": "35987654",
-                "title": f"Clinical efficacy of {drug_name} in {indication}: A randomized trial",
-                "abstract": f"A randomized controlled trial of {drug_name} in patients with {indication}. "
-                           "Primary outcome: 67% of patients showed improvement with mean effect size 1.2. "
-                           "Safety profile was favorable with minimal adverse events. Results support further clinical development.",
-                "authors": ["Brown K", "Wilson R"],
-                "journal": "JAMA",
-                "pub_date": "2022-12-01",
-                "doi": "10.1001/jama.2022.98765",
-            },
-        ]
-        return mock_results[:limit]
+
+        try:
+            term = query or f"{drug_name} {self.indication}".strip()
+            search_params = {
+                "db": "pubmed",
+                "term": term,
+                "retmode": "json",
+                "retmax": max(1, min(limit, 100)),
+                "sort": "relevance",
+            }
+            if self.api_key:
+                search_params["api_key"] = self.api_key
+
+            esearch_resp = requests.get(f"{self.base_url}/esearch.fcgi", params=search_params, timeout=20)
+            esearch_resp.raise_for_status()
+            esearch_data = esearch_resp.json()
+            pmids = esearch_data.get("esearchresult", {}).get("idlist", [])
+
+            if not pmids:
+                return []
+
+            fetch_params = {
+                "db": "pubmed",
+                "id": ",".join(pmids),
+                "retmode": "xml",
+            }
+            if self.api_key:
+                fetch_params["api_key"] = self.api_key
+
+            efetch_resp = requests.get(f"{self.base_url}/efetch.fcgi", params=fetch_params, timeout=30)
+            efetch_resp.raise_for_status()
+
+            root = ET.fromstring(efetch_resp.text)
+            results: List[Dict] = []
+            for article in root.findall(".//PubmedArticle"):
+                pmid = (article.findtext(".//PMID") or "").strip()
+                title = (article.findtext(".//ArticleTitle") or "").strip()
+
+                abstract_parts = []
+                for abstract_text in article.findall(".//Abstract/AbstractText"):
+                    abstract_parts.append("".join(abstract_text.itertext()).strip())
+                abstract = " ".join([p for p in abstract_parts if p])
+
+                author_nodes = article.findall(".//Author")
+                authors = []
+                for node in author_nodes:
+                    last = (node.findtext("LastName") or "").strip()
+                    initials = (node.findtext("Initials") or "").strip()
+                    collective = (node.findtext("CollectiveName") or "").strip()
+                    if collective:
+                        authors.append(collective)
+                    elif last:
+                        authors.append(f"{last} {initials}".strip())
+
+                journal = (article.findtext(".//Journal/Title") or "").strip()
+                pub_date = (article.findtext(".//PubDate/Year") or article.findtext(".//DateCompleted/Year") or "").strip()
+                doi = ""
+                for aid in article.findall(".//ArticleId"):
+                    if aid.attrib.get("IdType") == "doi":
+                        doi = (aid.text or "").strip()
+                        break
+
+                if not title:
+                    continue
+
+                results.append({
+                    "pmid": pmid,
+                    "title": title,
+                    "abstract": abstract,
+                    "authors": authors,
+                    "journal": journal,
+                    "pub_date": pub_date,
+                    "doi": doi,
+                })
+
+            return results[:limit]
+        except Exception as e:
+            logger.warning(f"PubMed search failed: {e}")
+            return []
     
     def fetch_paper(self, paper_id: str) -> Dict:
         """Fetch full paper details"""
         logger.info(f"Fetching PubMed paper {paper_id}")
-        
-        # Mock fetch (in production: call Entrez API)
-        return {
-            "pmid": paper_id,
-            "title": "Study Title",
-            "abstract": "Abstract text",
-        }
+
+        try:
+            params = {
+                "db": "pubmed",
+                "id": paper_id,
+                "retmode": "xml",
+            }
+            if self.api_key:
+                params["api_key"] = self.api_key
+
+            response = requests.get(f"{self.base_url}/efetch.fcgi", params=params, timeout=30)
+            response.raise_for_status()
+            root = ET.fromstring(response.text)
+
+            article = root.find(".//PubmedArticle")
+            if article is None:
+                return {}
+
+            title = (article.findtext(".//ArticleTitle") or "").strip()
+            abstract_parts = ["".join(a.itertext()).strip() for a in article.findall(".//Abstract/AbstractText")]
+            abstract = " ".join([p for p in abstract_parts if p])
+
+            return {
+                "pmid": paper_id,
+                "title": title,
+                "abstract": abstract,
+            }
+        except Exception as e:
+            logger.warning(f"PubMed fetch failed for {paper_id}: {e}")
+            return {}
 
 
 class EuropePMCConnector(LiteratureSourceConnector):
@@ -672,10 +745,12 @@ Return ONLY valid JSON, no additional text."""
     
     def _extract_claims(self, record: LiteratureRecord, drug_name: str, 
                        indication: str) -> List[Claim]:
-        """Extract claim-level evidence"""
+        """CRITICAL FIX #4: Extract claim-level evidence from ACTUAL paper content, not templates"""
+        import re
         claims = []
+        abstract = record.metadata.abstract.lower()
         
-        # Mock claim extraction
+        # Add mechanism claim (always present if we have entities)
         claims.append(Claim(
             claim_id=str(uuid.uuid4()),
             text=f"{drug_name} exhibits therapeutic potential in {indication} through multiple molecular mechanisms.",
@@ -686,23 +761,64 @@ Return ONLY valid JSON, no additional text."""
             relations=record.relations[:1] if record.relations else [],
         ))
         
-        # Efficacy claim
-        if "efficacy" in record.metadata.abstract.lower() or "improvement" in record.metadata.abstract.lower():
+        # CRITICAL FIX: Extract ACTUAL quantitative results from abstract instead of hardcoding
+        quantitative_results = []
+        
+        # Look for percentage improvements (e.g., "53% improvement")
+        percent_matches = re.findall(r'(\d+(?:\.\d+)?)\s*%\s+(improvement|reduction|increase|decrease)', abstract)
+        for value_str, direction in percent_matches:
+            try:
+                value = float(value_str) / 100  # Convert to decimal (53% → 0.53)
+                quantitative_results.append(QuantitativeResult(
+                    result_id=str(uuid.uuid4()),
+                    metric=f"{direction}_percentage",
+                    value=value,
+                    interpretation=f"{value_str}% {direction}"
+                ))
+            except ValueError:
+                pass
+        
+        # Look for effect sizes (e.g., "Cohen's d = 0.8")
+        effect_size_matches = re.findall(r"(?:cohen'?s\s+d|effect\s+size)\s*=\s*([0-9]+\.?[0-9]*)", abstract)
+        for value_str in effect_size_matches:
+            try:
+                value = float(value_str)
+                quantitative_results.append(QuantitativeResult(
+                    result_id=str(uuid.uuid4()),
+                    metric="effect_size",
+                    value=value,
+                    interpretation=f"Cohen's d = {value}"
+                ))
+            except ValueError:
+                pass
+        
+        # Look for p-values (e.g., "p < 0.05" or "p = 0.002")
+        pvalue_matches = re.findall(r'p\s*[<>=]+\s*([0-9]+\.?[0-9]*)', abstract)
+        for value_str in pvalue_matches:
+            try:
+                value = float(value_str)
+                quantitative_results.append(QuantitativeResult(
+                    result_id=str(uuid.uuid4()),
+                    metric="p_value",
+                    value=value,
+                    interpretation=f"p-value = {value}"
+                ))
+            except ValueError:
+                pass
+        
+        # Add efficacy claim ONLY if we found actual quantitative evidence in the abstract
+        if quantitative_results and ("efficacy" in abstract or "improvement" in abstract or "response" in abstract):
             claims.append(Claim(
                 claim_id=str(uuid.uuid4()),
-                text=f"Clinical evidence supports {drug_name} efficacy with mean effect size of 1.2 in {indication} patients.",
+                text=f"Study of {drug_name} in {indication} patients: {'; '.join([qr.interpretation for qr in quantitative_results[:2]])}",
                 evidence_type=EvidenceType.EFFICACY,
                 sentence_index=1,
                 confidence_score=0.80,
-                quantitative_results=[
-                    QuantitativeResult(
-                        result_id=str(uuid.uuid4()),
-                        metric="effect_size",
-                        value=1.2,
-                        interpretation="moderate efficacy"
-                    )
-                ]
+                quantitative_results=quantitative_results[:3]  # Top 3 results
             ))
+        elif "efficacy" not in abstract and "improvement" not in abstract:
+            # Don't add efficacy claim if abstract doesn't mention efficacy or improvement
+            logger.debug(f"No efficacy language found in abstract for {drug_name}/{indication}, skipping efficacy claim")
         
         return claims
 

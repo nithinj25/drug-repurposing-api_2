@@ -1,0 +1,11 @@
+{
+  "test_case": "metformin_alzheimer",
+  "request": {
+    "drug_name": "metformin",
+    "indication": "alzheimer's disease",
+    "include_patent": true,
+    "use_internal_data": false
+  },
+  "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=120)",
+  "timestamp": "2026-03-03T15:28:17.341328"
+}

@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-03-03T18:28:41.157729",
+  "total_tests": 4,
+  "successful": 0,
+  "failed": 4,
+  "test_cases": [
+    {
+      "name": "metformin_alzheimer",
+      "status_code": null,
+      "success": false
+    },
+    {
+      "name": "aspirin_colorectal_cancer",
+      "status_code": null,
+      "success": false
+    },
+    {
+      "name": "sildenafil_pulmonary_hypertension",
+      "status_code": null,
+      "success": false
+    },
+    {
+      "name": "thalidomide_multiple_myeloma",
+      "status_code": null,
+      "success": false
+    }
+  ]
+}
